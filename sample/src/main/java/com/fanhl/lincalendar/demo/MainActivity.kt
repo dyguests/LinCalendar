@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Card
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -48,10 +49,14 @@ fun MainScreen(modifier: Modifier = Modifier) {
             .then(modifier),
         contentAlignment = Alignment.Center
     ) {
-        LinCalendar(
-            localDate = localDate,
-            modifier = Modifier.size(300.dp, 240.dp),
-        )
+        Card {
+            LinCalendar(
+                localDate = localDate,
+                modifier = Modifier
+                    .size(300.dp, 240.dp)
+                    .padding(8.dp),
+            )
+        }
     }
 }
 
