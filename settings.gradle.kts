@@ -20,5 +20,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "LinCalendar"
-include(":app")
- 
+include(":sample")
+include(":library")
