@@ -7,8 +7,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -49,11 +49,14 @@ fun MainScreen(modifier: Modifier = Modifier) {
             .then(modifier),
         contentAlignment = Alignment.Center
     ) {
-        Card {
+        Card(
+            modifier = Modifier.padding(8.dp),
+        ) {
             LinCalendar(
                 localDate = localDate,
                 modifier = Modifier
-                    .size(300.dp, 240.dp)
+                    .fillMaxWidth()
+                    // .height(240.dp)
                     .padding(8.dp),
             )
         }

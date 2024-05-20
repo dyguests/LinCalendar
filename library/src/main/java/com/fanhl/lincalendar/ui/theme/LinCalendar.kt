@@ -1,6 +1,8 @@
 package com.fanhl.lincalendar.ui.theme
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerScope
 import androidx.compose.foundation.pager.rememberPagerState
@@ -9,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -24,9 +27,13 @@ fun LinCalendar(
     selectedDate: LocalDate? = null,
     firstDayOfWeek: DayOfWeek = DayOfWeek.MONDAY,
     mode: LinCalendar.Mode = LinCalendar.Mode.MONTH,
-    monthFiled: @Composable PagerScope.(selectedDate: LocalDate?) -> Unit = remember {
+    monthFiled: @Composable PagerScope.(
+        localDate: LocalDate,
+        selectedDate: LocalDate?,
+    ) -> Unit = remember {
         LinCalendarDefaults.monthField(
             firstDayOfWeek = firstDayOfWeek,
+            // weekHeaderField = LinCalendarDefaults.weekHeaderField(firstDayOfWeek = firstDayOfWeek)
         )
     },
 ) {
@@ -40,10 +47,14 @@ fun LinCalendar(
     HorizontalPager(
         state = state,
         modifier = Modifier
+            .fillMaxWidth()
+            // .background(Color.Yellow)
             .then(modifier),
+        beyondBoundsPageCount = 1,
     ) {
         // mode==LinCalendar.Mode.MONTH // todo
         monthFiled(
+            initLocalDate,
             selectedDate
         )
     }
