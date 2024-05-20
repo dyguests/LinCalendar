@@ -22,7 +22,7 @@ fun LinCalendar(
     modifier: Modifier = Modifier,
     selectedDate: LocalDate? = null,
     mode: LinCalendar.Mode = LinCalendar.Mode.MONTH,
-    monthFiled: @Composable (PagerScope.(selectedDate: LocalDate?) -> Unit) = remember { LinCalendarDefaults.monthField() },
+    monthFiled: @Composable PagerScope.(selectedDate: LocalDate?) -> Unit = remember { LinCalendarDefaults.monthField() },
 ) {
     // 日期的初始展示的日期，后续Pager基于此日期计算分布
     val initLocalDate by remember { mutableStateOf(localDate) }
@@ -38,13 +38,13 @@ fun LinCalendar(
     ) {
         // mode==LinCalendar.Mode.MONTH // todo
         monthFiled(
-            selectedDate = selectedDate,
+            selectedDate
         )
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
-@Preview(showBackground = true)
+@Preview(showBackground = true, widthDp = 320, heightDp = 240)
 @Composable
 private fun LinCalendarPreview() {
     LinCalendar(
