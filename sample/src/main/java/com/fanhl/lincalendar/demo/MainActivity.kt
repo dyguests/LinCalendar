@@ -5,12 +5,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -61,23 +65,61 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(innerPadding),
-                        contentAlignment = Alignment.Center
                     ) {
                         NavHost(navController = navController, startDestination = NAVI_MAIN) {
-                            composable(NAVI_MAIN) { MainScreen() }
+                            composable(NAVI_MAIN) { MainScreen(navController) }
+                            composable(NAVI_SPECIES) { SpeciesScreen() }
                         }
                     }
                 }
             }
         }
     }
+
 }
 
 private const val NAVI_MAIN = "main"
+private const val NAVI_SPECIES = "species"
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MainScreen() {
+private fun MainScreen(navController: NavHostController) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Card(
+            modifier = Modifier.padding(8.dp),
+        ) {
+            val localDate by remember { mutableStateOf(LocalDate.now()) }
+            LinCalendar(
+                localDate = localDate,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    // .height(240.dp)
+                    .padding(8.dp),
+            )
+        }
+
+        Button(onClick = { navController.navigate(NAVI_SPECIES) }) {
+            Text(text = "Species")
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun MainScreenPreview() {
+    LinCalendarTheme {
+        MainScreen(rememberNavController())
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun SpeciesScreen() {
     val localDate by remember { mutableStateOf(LocalDate.now()) }
     Box(
         modifier = Modifier
@@ -100,8 +142,8 @@ fun MainScreen() {
 
 @Preview(showBackground = true)
 @Composable
-fun MainScreenPreview() {
+private fun SpeciesScreenPreview() {
     LinCalendarTheme {
-        MainScreen()
+        SpeciesScreen()
     }
 }
