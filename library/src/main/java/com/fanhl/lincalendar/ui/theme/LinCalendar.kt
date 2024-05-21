@@ -24,14 +24,11 @@ fun LinCalendar(
     localDate: LocalDate,
     modifier: Modifier = Modifier,
     selectedDate: LocalDate? = null,
-    firstDayOfWeek: DayOfWeek = DayOfWeek.MONDAY,
     mode: LinCalendar.Mode = LinCalendar.Mode.MONTH,
-    monthFiled: @Composable PagerScope.(
-        localDate: LocalDate,
-        selectedDate: LocalDate?,
-    ) -> Unit = remember {
+    options: LinCalendar.Option = LinCalendarDefaults.defaultOption(),
+    monthFiled: @Composable() (PagerScope.(localDate: LocalDate, selectedDate: LocalDate?) -> Unit) = remember {
         LinCalendarDefaults.monthField(
-            firstDayOfWeek = firstDayOfWeek,
+            firstDayOfWeek = options.firstDayOfWeek,
             // weekHeaderField = LinCalendarDefaults.weekHeaderField(firstDayOfWeek = firstDayOfWeek)
         )
     },
@@ -69,6 +66,10 @@ private fun LinCalendarPreview() {
 }
 
 object LinCalendar {
+    data class Option(
+        val firstDayOfWeek: DayOfWeek = DayOfWeek.MONDAY,
+    )
+
     enum class Mode {
         MONTH,
         WEEK,

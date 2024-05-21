@@ -26,6 +26,8 @@ import java.time.YearMonth
 import java.util.Locale
 
 object LinCalendarDefaults {
+    fun defaultOption() = LinCalendar.Option()
+
     @OptIn(ExperimentalFoundationApi::class)
     fun monthField(
         modifier: Modifier = Modifier,
