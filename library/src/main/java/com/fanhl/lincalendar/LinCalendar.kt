@@ -1,4 +1,4 @@
-package com.fanhl.lincalendar.ui.theme
+package com.fanhl.lincalendar
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,6 +12,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.util.Locale
@@ -29,7 +31,7 @@ fun LinCalendar(
     options: LinCalendar.Option = LinCalendarDefaults.defaultOption(),
     monthFiled: @Composable() (PagerScope.(localDate: LocalDate, selectedDate: LocalDate?) -> Unit) = remember {
         LinCalendarDefaults.monthField(
-            firstDayOfWeek = options.firstDayOfWeek,
+            options = options, // todo 后续看能否通过 LinCalendarScope 来透传
             // weekHeaderField = LinCalendarDefaults.weekHeaderField(firstDayOfWeek = firstDayOfWeek)
         )
     },
@@ -68,6 +70,8 @@ private fun LinCalendarPreview() {
 
 object LinCalendar {
     data class Option(
+        val headerHeight: Dp = 32.dp,
+        val rowHeight: Dp = 36.dp,
         val firstDayOfWeek: DayOfWeek = DayOfWeek.MONDAY,
         val weekDisplayMode: WeekDisplayMode = WeekDisplayMode.FIXED_HEIGHT,
         val locale: Locale = Locale.getDefault(),
