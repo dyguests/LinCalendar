@@ -35,7 +35,7 @@ object LinCalendarDefaults {
         modifier: Modifier = Modifier,
         options: LinCalendar.Option = defaultOption(),
         weekHeaderField: @Composable (ColumnScope.() -> Unit) = weekHeaderField(),
-        weekField: @Composable AnimatedVisibilityScope.(yearMonth: YearMonth, week: Int) -> Unit = weekField(options),
+        weekField: @Composable AnimatedVisibilityScope.(yearMonth: YearMonth, firstDateOfWeek: LocalDate) -> Unit = weekField(options),
     ): @Composable PagerScope.(
         /** 当前显示日期；用于判断当前显示的月份/周。（之前用YearMonth，但是无法兼容周视图，这里统一改成 LocalDate） */
         localDate: LocalDate,
@@ -43,8 +43,8 @@ object LinCalendarDefaults {
         selectedDate: LocalDate?,
     ) -> Unit = { localDate, selectedDate ->
         val yearMonth = remember { YearMonth.from(localDate) }
+        val firstDayOfMonth = remember { yearMonth.atDay(1) }
         val weeks = remember {
-            val firstDayOfMonth = yearMonth.atDay(1)
             val dayOfWeekOfFirstDay = firstDayOfMonth.dayOfWeek.value
             ((dayOfWeekOfFirstDay - options.firstDayOfWeek.value) + yearMonth.lengthOfMonth() + /*向上取整*/6) / 7
         }
@@ -55,11 +55,15 @@ object LinCalendarDefaults {
         ) {
             weekHeaderField()
             for (week in 1..5) {
+                // 当周第一天是当月多少号
+                val firstDayOfMonthAtWeek = (week - 1) * 7 - (firstDayOfMonth.dayOfWeek.value - options.firstDayOfWeek.value)
+                val firstDateOfWeek = firstDayOfMonth.plusDays(firstDayOfMonthAtWeek.toLong())
+
                 AnimatedVisibility(
                     visible = true,
                 ) {
                     if (week <= weeks) {
-                        weekField(yearMonth, week)
+                        weekField(yearMonth, firstDateOfWeek)
                     } else {
                         Box(
                             modifier = Modifier
@@ -117,19 +121,13 @@ object LinCalendarDefaults {
         dayField: @Composable RowScope.(yearMonth: YearMonth, localDate: LocalDate) -> Unit = dayField(options)
     ): @Composable AnimatedVisibilityScope.(
         yearMonth: YearMonth,
-        /** week in 1..5 */
-        week: Int
-    ) -> Unit = { yearMonth, week ->
-        val firstDayOfMonth = remember { yearMonth.atDay(1) }
-        val dayOfWeekOfFirstDay = firstDayOfMonth.dayOfWeek.value
-
-        // 当周第一天是当月多少号
-        val firstDayOfMonthAtWeek = -(dayOfWeekOfFirstDay - options.firstDayOfWeek.value) + (week - 1) * 7
+        /** 当前周的第一天 */
+        firstDateOfWeek: LocalDate,
+    ) -> Unit = { yearMonth, firstDateOfWeek ->
         Row {
             for (i in 0 until 7) {
-                val dayOfMonth = firstDayOfMonthAtWeek + i
-                val day = firstDayOfMonth.plusDays(dayOfMonth.toLong())
-                dayField(yearMonth, day)
+                val localDate = firstDateOfWeek.plusDays(i.toLong())
+                dayField(yearMonth, localDate)
             }
         }
     }
