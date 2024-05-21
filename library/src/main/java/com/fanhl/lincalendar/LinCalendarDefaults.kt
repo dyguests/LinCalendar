@@ -114,6 +114,7 @@ object LinCalendarDefaults {
 
     fun weekField(
         options: LinCalendar.Option,
+        dayField: @Composable RowScope.(yearMonth: YearMonth, localDate: LocalDate) -> Unit = dayField(options)
     ): @Composable AnimatedVisibilityScope.(
         yearMonth: YearMonth,
         /** week in 1..5 */
@@ -128,20 +129,29 @@ object LinCalendarDefaults {
             for (i in 0 until 7) {
                 val dayOfMonth = firstDayOfMonthAtWeek + i
                 val day = firstDayOfMonth.plusDays(dayOfMonth.toLong())
-                Box(
-                    modifier = Modifier
-                        .height(options.rowHeight)
-                        .weight(1f),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        text = day.dayOfMonth.toString(),
-                        style = TextStyle(
-                            color = if (yearMonth.month == day.month) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.secondary,
-                        ),
-                    )
-                }
+                dayField(yearMonth, day)
             }
+        }
+    }
+
+    fun dayField(
+        options: LinCalendar.Option,
+    ): @Composable RowScope.(
+        yearMonth: YearMonth,
+        localDate: LocalDate,
+    ) -> Unit = { yearMonth, localDate ->
+        Box(
+            modifier = Modifier
+                .height(options.rowHeight)
+                .weight(1f),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = localDate.dayOfMonth.toString(),
+                style = TextStyle(
+                    color = if (yearMonth.month == localDate.month) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.secondary,
+                ),
+            )
         }
     }
 }

@@ -27,9 +27,8 @@ fun LinCalendar(
     localDate: LocalDate,
     modifier: Modifier = Modifier,
     selectedDate: LocalDate? = null,
-    mode: LinCalendar.Mode = LinCalendar.Mode.MONTH,
     options: LinCalendar.Option = LinCalendarDefaults.defaultOption(),
-    monthFiled: @Composable() (PagerScope.(localDate: LocalDate, selectedDate: LocalDate?) -> Unit) = remember {
+    monthFiled: @Composable (PagerScope.(localDate: LocalDate, selectedDate: LocalDate?) -> Unit) = remember {
         LinCalendarDefaults.monthField(
             options = options, // todo 后续看能否通过 LinCalendarScope 来透传
             // weekHeaderField = LinCalendarDefaults.weekHeaderField(firstDayOfWeek = firstDayOfWeek)
