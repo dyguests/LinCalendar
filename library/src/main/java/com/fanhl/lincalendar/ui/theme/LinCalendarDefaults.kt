@@ -111,7 +111,7 @@ object LinCalendarDefaults {
 }
 
 @OptIn(ExperimentalFoundationApi::class)
-@Preview(showBackground = true, widthDp = 320, heightDp = 240)
+@Preview(showBackground = true)
 @Composable
 private fun MonthFieldPreview() {
     HorizontalPager(state = rememberPagerState { 1 }) {

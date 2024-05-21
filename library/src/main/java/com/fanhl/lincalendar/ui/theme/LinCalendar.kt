@@ -1,8 +1,8 @@
 package com.fanhl.lincalendar.ui.theme
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerScope
 import androidx.compose.foundation.pager.rememberPagerState
@@ -11,7 +11,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -48,7 +47,7 @@ fun LinCalendar(
         state = state,
         modifier = Modifier
             .fillMaxWidth()
-            // .background(Color.Yellow)
+            .wrapContentHeight()
             .then(modifier),
         beyondBoundsPageCount = 1,
     ) {
@@ -61,7 +60,7 @@ fun LinCalendar(
 }
 
 @OptIn(ExperimentalFoundationApi::class)
-@Preview(showBackground = true, widthDp = 320, heightDp = 240)
+@Preview(showBackground = true)
 @Composable
 private fun LinCalendarPreview() {
     LinCalendar(
