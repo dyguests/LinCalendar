@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.util.Locale
 
 /**
  * @param localDate 当前显示日期；用于判断当前显示的月份/周。（之前用YearMonth，但是无法兼容周视图，这里统一改成 LocalDate）
@@ -68,7 +69,25 @@ private fun LinCalendarPreview() {
 object LinCalendar {
     data class Option(
         val firstDayOfWeek: DayOfWeek = DayOfWeek.MONDAY,
+        val weekDisplayMode: WeekDisplayMode = WeekDisplayMode.FIXED_HEIGHT,
+        val locale: Locale = Locale.getDefault(),
     )
+
+    /**
+     * 大多数情况下一个月有5周，极端情况会出现一个月仅有4周。
+     * 例如 2009年2月
+     * 这里配置 Calendar 的高度兼容模式
+     */
+    enum class WeekDisplayMode {
+        // 高度不变，空余第五周
+        FIXED_HEIGHT,
+
+        // 高度不变，按周平分高度
+        EQUAL_HEIGHT,
+
+        // 高度按当月有几周来动态适配
+        DYNAMIC_HEIGHT
+    }
 
     enum class Mode {
         MONTH,

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -53,15 +54,15 @@ object LinCalendarDefaults {
         ) {
             weekHeaderField()
             for (it in 0 until weeks) {
-                // 当周第一天是当月多少号
-                val dayOfMonthAtWeek = -(dayOfWeekOfFirstDay - firstDayOfWeek.value) + it * 7 + 1
                 AnimatedVisibility(
                     visible = true,
                 ) {
+                    // 当周第一天是当月多少号
+                    val firstDayOfMonthAtWeek = -(dayOfWeekOfFirstDay - firstDayOfWeek.value) + it * 7 + 1
                     Row(
                     ) {
                         for (i in 0 until 7) {
-                            val dayOfMonth = dayOfMonthAtWeek + i
+                            val dayOfMonth = firstDayOfMonthAtWeek + i
                             Box(
                                 modifier = Modifier
                                     .height(36.dp)
@@ -76,12 +77,22 @@ object LinCalendarDefaults {
                     }
                 }
             }
+            // todo keep 5 weeks? 极端情况会出现一个月仅有4周的情况，例如 2009年2月， 这时别的月份会有5行，而极端情况只有4行。这里整个 Calendar 的高度如何兼容？
+            if (weeks < 5) {
+                AnimatedVisibility(
+                    visible = true,
+                    modifier = Modifier.height(36.dp),
+                ) {
+
+                }
+            }
         }
     }
 
     fun weekHeaderField(
         modifier: Modifier = Modifier,
         firstDayOfWeek: DayOfWeek = DayOfWeek.MONDAY,
+        dayHeaderField: @Composable (RowScope.(dayOfWeek: DayOfWeek) -> Unit) = dayHeaderField(),
     ): @Composable (ColumnScope.() -> Unit) = {
         val locale = remember { Locale.getDefault() }
         val sortedDaysOfWeek = remember {
@@ -96,18 +107,24 @@ object LinCalendarDefaults {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             sortedDaysOfWeek.forEach {
-                Box(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .weight(1f),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        text = it.getDisplayName(java.time.format.TextStyle.SHORT, locale),
-                        style = TextStyle(),
-                    )
-                }
+                dayHeaderField(it)
             }
+        }
+    }
+
+    fun dayHeaderField(
+    ): @Composable RowScope.(dayOfWeek: DayOfWeek) -> Unit = { dayOfWeek ->
+        val locale = remember { Locale.getDefault() }
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .weight(1f),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = dayOfWeek.getDisplayName(java.time.format.TextStyle.SHORT, locale),
+                style = TextStyle(),
+            )
         }
     }
 }
