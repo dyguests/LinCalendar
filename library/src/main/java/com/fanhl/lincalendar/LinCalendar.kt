@@ -6,12 +6,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerScope
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -19,7 +15,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.YearMonth
 import java.util.Locale
 
 /**
@@ -39,35 +34,17 @@ fun LinCalendar(
         )
     },
 ) {
-    // 日期的初始展示的日期，后续Pager基于此日期计算分布
-    val anchorPage by remember { mutableIntStateOf(1) }
-
-    val pagerState = rememberPagerState(
-        initialPage = anchorPage,
-    ) { 3 }
-
-    LaunchedEffect(pagerState.currentPage) {
-        // todo 如果是 周视图，这里就应该计算周
-        val changedPeriod = YearMonth.from(state.currentPeriod)
-            .plusMonths((pagerState.currentPage - anchorPage).toLong())
-            .atDay(1)
-        state.updatePeriod(changedPeriod)
-    }
-
     HorizontalPager(
-        state = pagerState,
+        state = state.pagerState,
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
             .then(modifier),
         beyondBoundsPageCount = 1,
     ) { page ->
-        val currentPeriod = remember(state.currentPeriod, page, anchorPage) {
-            YearMonth.from(state.currentPeriod).plusMonths((page - anchorPage).toLong()).atDay(1)
-        }
         // mode==LinCalendar.Mode.MONTH // todo
         monthFiled(
-            currentPeriod,
+            state.getPeriod(page),
             selectedDate
         )
     }

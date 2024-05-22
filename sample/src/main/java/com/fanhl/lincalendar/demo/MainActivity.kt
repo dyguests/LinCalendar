@@ -96,13 +96,17 @@ private fun MainScreen(navController: NavHostController) {
             modifier = Modifier.padding(8.dp),
         ) {
             val state = rememberLinCalendarState()
-            LinCalendar(
-                state = state,
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    // .height(240.dp)
                     .padding(8.dp),
-            )
+            ) {
+                Text(text = state.currentPeriod.toString())
+                LinCalendar(
+                    state = state,
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                )
+            }
         }
 
         Button(onClick = { navController.navigate(NAVI_SPECIES) }) {
