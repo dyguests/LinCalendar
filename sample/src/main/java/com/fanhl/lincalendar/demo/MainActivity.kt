@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -93,9 +94,10 @@ private fun MainScreen(navController: NavHostController) {
         Card(
             modifier = Modifier.padding(8.dp),
         ) {
-            val localDate by remember { mutableStateOf(LocalDate.now()) }
+            var localDate by remember { mutableStateOf(LocalDate.now()) }
             LinCalendar(
-                localDate = localDate,
+                period = localDate,
+                onPeriodChange = { localDate = it },
                 modifier = Modifier
                     .fillMaxWidth()
                     // .height(240.dp)
@@ -120,7 +122,7 @@ private fun MainScreenPreview() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun SpeciesScreen() {
-    val localDate by remember { mutableStateOf(LocalDate.now()) }
+    var localDate by remember { mutableStateOf(LocalDate.now()) }
     Box(
         modifier = Modifier
             .fillMaxSize(),
@@ -130,7 +132,8 @@ private fun SpeciesScreen() {
             modifier = Modifier.padding(8.dp),
         ) {
             LinCalendar(
-                localDate = localDate,
+                period = localDate,
+                onPeriodChange = { localDate = it },
                 modifier = Modifier
                     .fillMaxWidth()
                     // .height(240.dp)

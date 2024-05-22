@@ -38,11 +38,11 @@ object LinCalendarDefaults {
         weekField: @Composable AnimatedVisibilityScope.(yearMonth: YearMonth, firstDateOfWeek: LocalDate) -> Unit = weekField(options),
     ): @Composable PagerScope.(
         /** 当前显示日期；用于判断当前显示的月份/周。（之前用YearMonth，但是无法兼容周视图，这里统一改成 LocalDate） */
-        localDate: LocalDate,
+        period: LocalDate,
         /** 当前选中的日期 */
         selectedDate: LocalDate?,
-    ) -> Unit = { localDate, selectedDate ->
-        val yearMonth = remember { YearMonth.from(localDate) }
+    ) -> Unit = { period, selectedDate ->
+        val yearMonth = remember { YearMonth.from(period) }
         val firstDayOfMonth = remember { yearMonth.atDay(1) }
         val weeks = remember {
             val dayOfWeekOfFirstDay = firstDayOfMonth.dayOfWeek.value
