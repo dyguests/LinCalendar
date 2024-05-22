@@ -1,16 +1,17 @@
 package com.fanhl.lincalendar
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerScope
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,12 +28,11 @@ import java.util.Locale
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LinCalendar(
-    period: LocalDate,
-    onPeriodChange: (LocalDate) -> Unit,
+    state: LinCalendarState,
     modifier: Modifier = Modifier,
     selectedDate: LocalDate? = null,
     options: LinCalendar.Option = LinCalendarDefaults.defaultOption(),
-    monthFiled: @Composable (PagerScope.(period: LocalDate, selectedDate: LocalDate?) -> Unit) = remember {
+    monthFiled: @Composable() (PagerScope.(period: LocalDate, selectedDate: LocalDate?) -> Unit) = remember {
         LinCalendarDefaults.monthField(
             options = options, // todo 后续看能否通过 LinCalendarScope 来透传
             // weekHeaderField = LinCalendarDefaults.weekHeaderField(firstDayOfWeek = firstDayOfWeek)
@@ -40,7 +40,6 @@ fun LinCalendar(
     },
 ) {
     // 日期的初始展示的日期，后续Pager基于此日期计算分布
-    val anchorPeriod by remember { mutableStateOf(period) }
     val anchorPage by remember { mutableIntStateOf(1) }
 
     val pagerState = rememberPagerState(
@@ -49,8 +48,10 @@ fun LinCalendar(
 
     LaunchedEffect(pagerState.currentPage) {
         // todo 如果是 周视图，这里就应该计算周
-        val changedPeriod = YearMonth.from(period).plusMonths((pagerState.currentPage - anchorPage).toLong()).atDay(1)
-        onPeriodChange(changedPeriod)
+        val changedPeriod = YearMonth.from(state.currentPeriod)
+            .plusMonths((pagerState.currentPage - anchorPage).toLong())
+            .atDay(1)
+        state.updatePeriod(changedPeriod)
     }
 
     HorizontalPager(
@@ -61,8 +62,8 @@ fun LinCalendar(
             .then(modifier),
         beyondBoundsPageCount = 1,
     ) { page ->
-        val currentPeriod = remember(period, page, anchorPage) {
-            YearMonth.from(period).plusMonths((page - anchorPage).toLong()).atDay(1)
+        val currentPeriod = remember(state.currentPeriod, page, anchorPage) {
+            YearMonth.from(state.currentPeriod).plusMonths((page - anchorPage).toLong()).atDay(1)
         }
         // mode==LinCalendar.Mode.MONTH // todo
         monthFiled(
@@ -76,10 +77,13 @@ fun LinCalendar(
 @Preview(showBackground = true)
 @Composable
 private fun LinCalendarPreview() {
-    LinCalendar(
-        period = LocalDate.now(),
-        onPeriodChange = {},
-    )
+    val state = rememberLinCalendarState()
+    Column {
+        Text(text = state.currentPeriod.toString())
+        LinCalendar(
+            state = state,
+        )
+    }
 }
 
 object LinCalendar {

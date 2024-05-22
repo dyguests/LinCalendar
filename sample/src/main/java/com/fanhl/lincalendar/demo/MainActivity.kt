@@ -36,6 +36,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.fanhl.lincalendar.LinCalendar
 import com.fanhl.lincalendar.demo.ui.theme.LinCalendarTheme
+import com.fanhl.lincalendar.rememberLinCalendarState
 import java.time.LocalDate
 
 class MainActivity : ComponentActivity() {
@@ -94,10 +95,9 @@ private fun MainScreen(navController: NavHostController) {
         Card(
             modifier = Modifier.padding(8.dp),
         ) {
-            var period by remember { mutableStateOf(LocalDate.now()) }
+            val state = rememberLinCalendarState()
             LinCalendar(
-                period = period,
-                onPeriodChange = { period = it },
+                state = state,
                 modifier = Modifier
                     .fillMaxWidth()
                     // .height(240.dp)
@@ -131,14 +131,14 @@ private fun SpeciesScreen() {
         Card(
             modifier = Modifier.padding(8.dp),
         ) {
-            LinCalendar(
-                period = period,
-                onPeriodChange = { period = it },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    // .height(240.dp)
-                    .padding(8.dp),
-            )
+            // LinCalendar(
+            //     period = period,
+            //     onPeriodChange = { period = it },
+            //     modifier = Modifier
+            //         .fillMaxWidth()
+            //         // .height(240.dp)
+            //         .padding(8.dp),
+            // )
         }
     }
 }
