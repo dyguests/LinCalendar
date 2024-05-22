@@ -12,7 +12,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -48,12 +47,10 @@ fun LinCalendar(
         initialPage = anchorPage,
     ) { 3 }
 
-    LaunchedEffect(Unit) {
-        snapshotFlow { pagerState.currentPage }.collect {
-
-            val changedPeriod = YearMonth.now().atDay(1)
-            onPeriodChange(changedPeriod)
-        }
+    LaunchedEffect(pagerState.currentPage) {
+        // todo 如果是 周视图，这里就应该计算周
+        val changedPeriod = YearMonth.from(period).plusMonths((pagerState.currentPage - anchorPage).toLong()).atDay(1)
+        onPeriodChange(changedPeriod)
     }
 
     HorizontalPager(
@@ -63,10 +60,13 @@ fun LinCalendar(
             .wrapContentHeight()
             .then(modifier),
         beyondBoundsPageCount = 1,
-    ) {
+    ) { page ->
+        val currentPeriod = remember(period, page, anchorPage) {
+            YearMonth.from(period).plusMonths((page - anchorPage).toLong()).atDay(1)
+        }
         // mode==LinCalendar.Mode.MONTH // todo
         monthFiled(
-            period,
+            currentPeriod,
             selectedDate
         )
     }

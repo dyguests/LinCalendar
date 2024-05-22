@@ -94,10 +94,10 @@ private fun MainScreen(navController: NavHostController) {
         Card(
             modifier = Modifier.padding(8.dp),
         ) {
-            var localDate by remember { mutableStateOf(LocalDate.now()) }
+            var period by remember { mutableStateOf(LocalDate.now()) }
             LinCalendar(
-                period = localDate,
-                onPeriodChange = { localDate = it },
+                period = period,
+                onPeriodChange = { period = it },
                 modifier = Modifier
                     .fillMaxWidth()
                     // .height(240.dp)
@@ -122,7 +122,7 @@ private fun MainScreenPreview() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun SpeciesScreen() {
-    var localDate by remember { mutableStateOf(LocalDate.now()) }
+    var period by remember { mutableStateOf(LocalDate.now()) }
     Box(
         modifier = Modifier
             .fillMaxSize(),
@@ -132,8 +132,8 @@ private fun SpeciesScreen() {
             modifier = Modifier.padding(8.dp),
         ) {
             LinCalendar(
-                period = localDate,
-                onPeriodChange = { localDate = it },
+                period = period,
+                onPeriodChange = { period = it },
                 modifier = Modifier
                     .fillMaxWidth()
                     // .height(240.dp)
