@@ -8,7 +8,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerScope
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -27,12 +26,10 @@ fun LinCalendar(
     modifier: Modifier = Modifier,
     selectedDate: LocalDate? = null,
     options: LinCalendar.Option = LinCalendarDefaults.defaultOption(),
-    monthFiled: @Composable() (PagerScope.(period: LocalDate, selectedDate: LocalDate?) -> Unit) = remember {
-        LinCalendarDefaults.monthField(
-            options = options, // todo 后续看能否通过 LinCalendarScope 来透传
-            // weekHeaderField = LinCalendarDefaults.weekHeaderField(firstDayOfWeek = firstDayOfWeek)
-        )
-    },
+    monthFiled: @Composable() (PagerScope.(period: LocalDate, selectedDate: LocalDate?) -> Unit) = LinCalendarDefaults.monthField(
+        options = options, // todo 后续看能否通过 LinCalendarScope 来透传
+        // weekHeaderField = LinCalendarDefaults.weekHeaderField(firstDayOfWeek = firstDayOfWeek)
+    ),
 ) {
     HorizontalPager(
         state = state.pagerState,
