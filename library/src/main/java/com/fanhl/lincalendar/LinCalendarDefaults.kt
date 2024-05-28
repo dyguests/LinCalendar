@@ -48,8 +48,12 @@ object LinCalendarDefaults {
     fun monthField(
         modifier: Modifier = Modifier,
         options: LinCalendar.Option = option(),
-        weekHeaderField: @Composable (ColumnScope.() -> Unit) = weekHeaderField(),
-        weekField: @Composable AnimatedVisibilityScope.(yearMonth: YearMonth, firstDateOfWeek: LocalDate) -> Unit = weekField(options),
+        weekHeaderField: @Composable (ColumnScope.() -> Unit) = weekHeaderField(
+            options = options,
+        ),
+        weekField: @Composable AnimatedVisibilityScope.(yearMonth: YearMonth, firstDateOfWeek: LocalDate) -> Unit = weekField(
+            options = options,
+        ),
     ): @Composable PagerScope.(
         /** 当前显示日期；用于判断当前显示的月份/周。（之前用YearMonth，但是无法兼容周视图，这里统一改成 LocalDate） */
         period: LocalDate,
@@ -94,9 +98,10 @@ object LinCalendarDefaults {
     fun weekHeaderField(
         modifier: Modifier = Modifier,
         options: LinCalendar.Option = option(),
-        dayHeaderField: @Composable() (RowScope.(dayOfWeek: DayOfWeek) -> Unit) = dayHeaderField(),
+        dayHeaderField: @Composable() (RowScope.(dayOfWeek: DayOfWeek) -> Unit) = dayHeaderField(
+            options = options,
+        ),
     ): @Composable (ColumnScope.() -> Unit) = {
-        val locale = remember { Locale.getDefault() }
         val sortedDaysOfWeek = remember {
             DayOfWeek.entries.run {
                 slice(options.firstDayOfWeek.ordinal until size) + slice(0 until options.firstDayOfWeek.ordinal)
@@ -115,12 +120,15 @@ object LinCalendarDefaults {
     }
 
     fun dayHeaderField(
+        modifier: Modifier = Modifier,
+        options: LinCalendar.Option = option(),
     ): @Composable RowScope.(dayOfWeek: DayOfWeek) -> Unit = { dayOfWeek ->
         val locale = remember { Locale.getDefault() }
         Box(
             modifier = Modifier
                 .fillMaxHeight()
-                .weight(1f),
+                .weight(1f)
+                .then(modifier),
             contentAlignment = Alignment.Center,
         ) {
             Text(
@@ -131,14 +139,19 @@ object LinCalendarDefaults {
     }
 
     fun weekField(
+        modifier: Modifier = Modifier,
         options: LinCalendar.Option,
-        dayField: @Composable RowScope.(yearMonth: YearMonth, localDate: LocalDate) -> Unit = dayField(options)
+        dayField: @Composable RowScope.(yearMonth: YearMonth, localDate: LocalDate) -> Unit = dayField(
+            options = options,
+        )
     ): @Composable AnimatedVisibilityScope.(
         yearMonth: YearMonth,
         /** 当前周的第一天 */
         firstDateOfWeek: LocalDate,
     ) -> Unit = { yearMonth, firstDateOfWeek ->
-        Row {
+        Row(
+            modifier = Modifier.then(modifier),
+        ) {
             for (i in 0 until 7) {
                 val localDate = firstDateOfWeek.plusDays(i.toLong())
                 dayField(yearMonth, localDate)
@@ -147,6 +160,7 @@ object LinCalendarDefaults {
     }
 
     fun dayField(
+        modifier: Modifier = Modifier,
         options: LinCalendar.Option,
     ): @Composable RowScope.(
         yearMonth: YearMonth,
@@ -155,7 +169,8 @@ object LinCalendarDefaults {
         Box(
             modifier = Modifier
                 .height(options.rowHeight)
-                .weight(1f),
+                .weight(1f)
+                .then(modifier),
             contentAlignment = Alignment.Center,
         ) {
             Text(
