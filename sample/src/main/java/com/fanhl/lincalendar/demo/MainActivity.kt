@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -55,7 +55,7 @@ class MainActivity : ComponentActivity() {
                             navigationIcon = {
                                 IconButton(onClick = { navController.navigateUp() }) {
                                     Icon(
-                                        imageVector = Icons.Filled.ArrowBack,
+                                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                         contentDescription = "Localized description"
                                     )
                                 }
@@ -126,7 +126,7 @@ private fun MainScreenPreview() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun SpeciesScreen() {
-    var period by remember { mutableStateOf(LocalDate.now()) }
+    // var period by remember { mutableStateOf(LocalDate.now()) }
     Box(
         modifier = Modifier
             .fillMaxSize(),
