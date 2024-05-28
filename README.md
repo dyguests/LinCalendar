@@ -29,3 +29,7 @@ A composable Calendar.
 # Usage
 
 TODO
+
+# License
+
+see [LICENSE](LICENSE)
