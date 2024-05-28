@@ -74,7 +74,7 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "com.github.dyguests"
             artifactId = "LinCalendar"
-            version = "0.2.0"
+            // version = "0.2.0"
 
             afterEvaluate {
                 from(components["release"])
