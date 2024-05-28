@@ -32,4 +32,4 @@ TODO
 
 # License
 
-see [LICENSE](LICENSE)
+[MIT LICENSE](LICENSE)
