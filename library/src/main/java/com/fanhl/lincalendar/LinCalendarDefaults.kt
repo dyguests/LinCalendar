@@ -22,18 +22,32 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
 import java.util.Locale
 
 object LinCalendarDefaults {
-    fun defaultOption() = LinCalendar.Option()
+    fun option(
+        headerHeight: Dp = 32.dp,
+        rowHeight: Dp = 36.dp,
+        firstDayOfWeek: DayOfWeek = DayOfWeek.MONDAY,
+        weekDisplayMode: LinCalendar.WeekDisplayMode = LinCalendar.WeekDisplayMode.FIXED_HEIGHT,
+        locale: Locale = Locale.getDefault(),
+    ) = LinCalendar.Option(
+        headerHeight = headerHeight,
+        rowHeight = rowHeight,
+        firstDayOfWeek = firstDayOfWeek,
+        weekDisplayMode = weekDisplayMode,
+        locale = locale
+    )
 
     @OptIn(ExperimentalFoundationApi::class)
     fun monthField(
         modifier: Modifier = Modifier,
-        options: LinCalendar.Option = defaultOption(),
+        options: LinCalendar.Option = option(),
         weekHeaderField: @Composable (ColumnScope.() -> Unit) = weekHeaderField(),
         weekField: @Composable AnimatedVisibilityScope.(yearMonth: YearMonth, firstDateOfWeek: LocalDate) -> Unit = weekField(options),
     ): @Composable PagerScope.(
@@ -79,7 +93,7 @@ object LinCalendarDefaults {
 
     fun weekHeaderField(
         modifier: Modifier = Modifier,
-        options: LinCalendar.Option = defaultOption(),
+        options: LinCalendar.Option = option(),
         dayHeaderField: @Composable() (RowScope.(dayOfWeek: DayOfWeek) -> Unit) = dayHeaderField(),
     ): @Composable (ColumnScope.() -> Unit) = {
         val locale = remember { Locale.getDefault() }
