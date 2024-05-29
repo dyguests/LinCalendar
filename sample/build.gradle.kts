@@ -57,7 +57,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
     // implementation(project(":library"))
-    implementation ("com.github.dyguests:LinCalendar:0.2.1")
+    implementation ("com.github.dyguests:LinCalendar:0.3.2")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

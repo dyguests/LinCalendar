@@ -37,8 +37,8 @@ fun rememberLinCalendarState(
 
     LaunchedEffect(pagerState.currentPage) {
         // todo 如果是 周视图，这里就应该计算周
-        val changedPeriod = linCalendarState.getPeriod(pagerState.currentPage)
-        linCalendarState.updatePeriod(changedPeriod)
+        val changedPeriod = linCalendarState.getPeriodByPage(pagerState.currentPage)
+        linCalendarState.setPeriodByPager(changedPeriod)
     }
 
     return linCalendarState
@@ -56,9 +56,9 @@ abstract class LinCalendarState {
     @OptIn(ExperimentalFoundationApi::class)
     internal abstract val pagerState: PagerState
 
-    internal abstract fun getPeriod(page: Int): LocalDate
+    internal abstract fun getPeriodByPage(page: Int): LocalDate
 
-    internal abstract fun updatePeriod(period: LocalDate)
+    internal abstract fun setPeriodByPager(period: LocalDate)
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -72,12 +72,12 @@ internal class LinCalendarStateImpl(
     override val currentPeriod: LocalDate
         get() = _currentPeriod
 
-    override fun getPeriod(page: Int): LocalDate {
+    override fun getPeriodByPage(page: Int): LocalDate {
         // todo 未兼容 周时期
         return YearMonth.from(initialPeriod).plusMonths((page - initialPage).toLong()).atDay(1)
     }
 
-    override fun updatePeriod(period: LocalDate) {
+    override fun setPeriodByPager(period: LocalDate) {
         this._currentPeriod = period
     }
 
