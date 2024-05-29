@@ -24,9 +24,8 @@ import java.util.Locale
 fun LinCalendar(
     state: LinCalendarState,
     modifier: Modifier = Modifier,
-    selectedDate: LocalDate? = null,
     options: LinCalendar.Option = LinCalendarDefaults.option(),
-    monthFiled: @Composable() (PagerScope.(period: LocalDate, selectedDate: LocalDate?) -> Unit) = LinCalendarDefaults.monthField(
+    monthFiled: @Composable() (PagerScope.(period: LocalDate) -> Unit) = LinCalendarDefaults.monthField(
         options = options, // todo 后续看能否通过 LinCalendarScope 来透传
         // weekHeaderField = LinCalendarDefaults.weekHeaderField(firstDayOfWeek = firstDayOfWeek)
     ),
@@ -42,7 +41,6 @@ fun LinCalendar(
         // mode==LinCalendar.Mode.MONTH // todo
         monthFiled(
             state.getPeriod(page),
-            selectedDate
         )
     }
 }

@@ -57,9 +57,7 @@ object LinCalendarDefaults {
     ): @Composable PagerScope.(
         /** 当前显示日期；用于判断当前显示的月份/周。（之前用YearMonth，但是无法兼容周视图，这里统一改成 LocalDate） */
         period: LocalDate,
-        /** 当前选中的日期 */
-        selectedDate: LocalDate?,
-    ) -> Unit = { period, selectedDate ->
+    ) -> Unit = { period ->
         val yearMonth = remember { YearMonth.from(period) }
         val firstDayOfMonth = remember { yearMonth.atDay(1) }
         val weeks = remember {
@@ -98,7 +96,7 @@ object LinCalendarDefaults {
     fun weekHeaderField(
         modifier: Modifier = Modifier,
         options: LinCalendar.Option = option(),
-        dayHeaderField: @Composable() (RowScope.(dayOfWeek: DayOfWeek) -> Unit) = dayHeaderField(
+        dayHeaderField: @Composable (RowScope.(dayOfWeek: DayOfWeek) -> Unit) = dayHeaderField(
             options = options,
         ),
     ): @Composable (ColumnScope.() -> Unit) = {
@@ -190,7 +188,6 @@ private fun MonthFieldPreview() {
     HorizontalPager(state = rememberPagerState { 1 }) {
         LinCalendarDefaults.monthField()(
             LocalDate.now(),
-            null,
         )
     }
 }
@@ -202,7 +199,6 @@ private fun MonthFieldPreview2() {
     HorizontalPager(state = rememberPagerState { 1 }) {
         LinCalendarDefaults.monthField()(
             LocalDate.of(2021, 2, 1),
-            null,
         )
     }
 }
