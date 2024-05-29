@@ -73,7 +73,7 @@ publishing {
     publications {
         register<MavenPublication>("release") {
             groupId = "com.github.dyguests"
-            artifactId = "LinCalendar"
+            artifactId = "lincalendar"
             // version = "0.2.0"
 
             afterEvaluate {
