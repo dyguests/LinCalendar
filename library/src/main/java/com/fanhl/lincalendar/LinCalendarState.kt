@@ -12,6 +12,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.temporal.ChronoUnit
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -23,9 +24,10 @@ fun rememberLinCalendarState(
         initialPage = initialPage,
     ) { 3 }
 
-    val linCalendarState = rememberSaveable(saver = LinCalendarStateImpl.Saver) {
-        // todo 基于 option mode 可能是 当月第一天， 也可能是当周第一天。 其中当周第一天需要基于 firstDayOfWeek 来计算
-        val formatInitialPeriod = YearMonth.from(initialPeriod).atDay(1)
+    // todo 基于 option mode 可能是 当月第一天， 也可能是当周第一天。 其中当周第一天需要基于 firstDayOfWeek 来计算
+    val formatInitialPeriod = YearMonth.from(initialPeriod).atDay(1)
+
+    val calendarState = rememberSaveable(saver = LinCalendarStateImpl.Saver) {
 
         LinCalendarStateImpl(
             initialPeriod = formatInitialPeriod,
@@ -35,13 +37,23 @@ fun rememberLinCalendarState(
         )
     }
 
-    LaunchedEffect(pagerState.currentPage) {
-        // todo 如果是 周视图，这里就应该计算周
-        val changedPeriod = linCalendarState.getPeriodByPage(pagerState.currentPage)
-        linCalendarState.setPeriodByPager(changedPeriod)
+    LaunchedEffect(calendarState.currentPeriod) {
+        val yearMonth =YearMonth.from(calendarState.currentPeriod)
+        val page = YearMonth.from(formatInitialPeriod).until(yearMonth, ChronoUnit.MONTHS).toInt() + 1
+        if (page != pagerState.currentPage) {
+            pagerState.scrollToPage(page)
+        }
     }
 
-    return linCalendarState
+    LaunchedEffect(pagerState.currentPage) {
+        // todo 如果是 周视图，这里就应该计算周
+        val changedPeriod = calendarState.getPeriodByPage(pagerState.currentPage)
+        if (changedPeriod != calendarState.currentPeriod) {
+            calendarState.setPeriodByPager(changedPeriod)
+        }
+    }
+
+    return calendarState
 }
 
 abstract class LinCalendarState {
@@ -52,6 +64,7 @@ abstract class LinCalendarState {
      * 实际值为 当月第一天/当周第一天。
      */
     abstract val currentPeriod: LocalDate
+    abstract fun setPeriod(period: LocalDate)
 
     @OptIn(ExperimentalFoundationApi::class)
     internal abstract val pagerState: PagerState
@@ -72,9 +85,18 @@ internal class LinCalendarStateImpl(
     override val currentPeriod: LocalDate
         get() = _currentPeriod
 
+    override fun setPeriod(period: LocalDate) {
+        _currentPeriod = period
+    }
+
     override fun getPeriodByPage(page: Int): LocalDate {
         // todo 未兼容 周时期
-        return YearMonth.from(initialPeriod).plusMonths((page - initialPage).toLong()).atDay(1)
+        val destMonth = YearMonth.from(initialPeriod).plusMonths((page - initialPage).toLong())
+        if (destMonth == YearMonth.from(currentPeriod)) {
+            return currentPeriod
+        }
+        val destDate = destMonth.atDay(1)
+        return destDate
     }
 
     override fun setPeriodByPager(period: LocalDate) {
