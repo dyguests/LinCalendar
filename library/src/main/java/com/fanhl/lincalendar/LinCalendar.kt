@@ -88,8 +88,8 @@ object LinCalendar {
         DYNAMIC_HEIGHT
     }
 
-    enum class Mode {
-        MONTH,
-        WEEK,
+    enum class DisplayMode {
+        MONTHLY,
+        WEEKLY,
     }
 }

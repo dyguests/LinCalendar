@@ -23,6 +23,7 @@ fun rememberLinCalendarState(
     initialDate: LocalDate = LocalDate.now(),
     startDate: LocalDate = LocalDate.of(1900, 1, 1),
     endDate: LocalDate = LocalDate.of(2099, 12, 31),
+    initialDisplayMode: LinCalendar.DisplayMode = LinCalendar.DisplayMode.MONTHLY,
 ): LinCalendarState {
     // Ensure startDate < endDate
     val (adjustedStartDate, adjustedEndDate) = if (endDate.isBefore(startDate)) {
@@ -49,10 +50,10 @@ fun rememberLinCalendarState(
 
     val calendarState = rememberSaveable(saver = LinCalendarStateImpl.Saver) {
         LinCalendarStateImpl(
-            initialPeriod = formatInitialDate,
+            initialDate = formatInitialDate,
+            initialDisplayMode = initialDisplayMode,
             initialPage = initialPage,
             pagerState = pagerState,
-            // options = options,
         )
     }
 
@@ -83,6 +84,7 @@ abstract class LinCalendarState {
      * 实际值为 当月第一天/当周第一天。
      */
     abstract var date: LocalDate
+    abstract var displayMode: LinCalendar.DisplayMode
 
     @OptIn(ExperimentalFoundationApi::class)
     internal abstract val pagerState: PagerState
@@ -92,21 +94,29 @@ abstract class LinCalendarState {
 
 @OptIn(ExperimentalFoundationApi::class)
 internal class LinCalendarStateImpl(
-    private val initialPeriod: LocalDate,
+    private val initialDate: LocalDate,
+    private val initialDisplayMode: LinCalendar.DisplayMode,
     private val initialPage: Int,
     override val pagerState: PagerState,
 ) : LinCalendarState() {
 
-    private var _date by mutableStateOf(initialPeriod)
+    private var _date by mutableStateOf(initialDate)
     override var date: LocalDate
         get() = _date
         set(value) {
             _date = value
         }
 
+    private var _displayMode by mutableStateOf(initialDisplayMode)
+    override var displayMode: LinCalendar.DisplayMode
+        get() = _displayMode
+        set(value) {
+            _displayMode = value
+        }
+
     override fun getPeriodByPage(page: Int): LocalDate {
         // todo 未兼容 周时期
-        val destMonth = YearMonth.from(initialPeriod).plusMonths((page - initialPage).toLong())
+        val destMonth = YearMonth.from(initialDate).plusMonths((page - initialPage).toLong())
         if (destMonth == YearMonth.from(date)) {
             return date
         }
@@ -118,14 +128,16 @@ internal class LinCalendarStateImpl(
         val Saver = Saver<LinCalendarStateImpl, Map<String, Any>>(
             save = {
                 mapOf(
-                    "initialPeriod" to it.initialPeriod,
+                    "initialDate" to it.initialDate,
+                    "initialDisplayMode" to it.initialDisplayMode,
                     "initialPage" to it.initialPage,
                     "pagerState" to it.pagerState,
                 )
             },
             restore = {
                 LinCalendarStateImpl(
-                    initialPeriod = it["initialPeriod"] as LocalDate,
+                    initialDate = it["initialDate"] as LocalDate,
+                    initialDisplayMode = it["initialDisplayMode"] as LinCalendar.DisplayMode,
                     initialPage = it["initialPage"] as Int,
                     pagerState = it["pagerState"] as PagerState,
                 )
