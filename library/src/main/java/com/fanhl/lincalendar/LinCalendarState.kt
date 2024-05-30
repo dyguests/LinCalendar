@@ -17,7 +17,9 @@ import java.time.temporal.ChronoUnit
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun rememberLinCalendarState(
-    initialPeriod: LocalDate = LocalDate.now(),
+    initialDate: LocalDate = LocalDate.now(),
+    startDate: LocalDate = LocalDate.of(1900, 1, 1),
+    endDate: LocalDate = LocalDate.of(2099, 12, 31),
 ): LinCalendarState {
     val initialPage = 1
     val pagerState = rememberPagerState(
@@ -25,7 +27,7 @@ fun rememberLinCalendarState(
     ) { 3 }
 
     // todo 基于 option mode 可能是 当月第一天， 也可能是当周第一天。 其中当周第一天需要基于 firstDayOfWeek 来计算
-    val formatInitialPeriod = YearMonth.from(initialPeriod).atDay(1)
+    val formatInitialPeriod = YearMonth.from(initialDate).atDay(1)
 
     val calendarState = rememberSaveable(saver = LinCalendarStateImpl.Saver) {
 
