@@ -14,6 +14,9 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.temporal.ChronoUnit
 
+/**
+ * @param initialDate 初始日期 用于判断当前显示的月份/周。（之前用YearMonth，但是无法兼容周视图，这里统一改成 LocalDate）
+ */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun rememberLinCalendarState(

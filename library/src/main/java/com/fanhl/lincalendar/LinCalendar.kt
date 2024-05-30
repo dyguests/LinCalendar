@@ -19,9 +19,6 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.util.Locale
 
-/**
- * @param period 当前显示日期；用于判断当前显示的月份/周。（之前用YearMonth，但是无法兼容周视图，这里统一改成 LocalDate）
- */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LinCalendar(
