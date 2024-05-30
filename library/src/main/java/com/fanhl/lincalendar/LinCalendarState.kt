@@ -53,8 +53,8 @@ fun rememberLinCalendarState(
         )
     }
 
-    LaunchedEffect(calendarState.period) {
-        val yearMonth = YearMonth.from(calendarState.period)
+    LaunchedEffect(calendarState.date) {
+        val yearMonth = YearMonth.from(calendarState.date)
         val changedPage = initialPage + YearMonth.from(formatInitialDate).until(yearMonth, ChronoUnit.MONTHS).toInt()
         if (changedPage != pagerState.currentPage) {
             pagerState.scrollToPage(changedPage)
@@ -64,8 +64,8 @@ fun rememberLinCalendarState(
     LaunchedEffect(pagerState.currentPage) {
         // todo 如果是 周视图，这里就应该计算周
         val changedPeriod = calendarState.getPeriodByPage(pagerState.currentPage)
-        if (changedPeriod != calendarState.period) {
-            calendarState.period = changedPeriod
+        if (changedPeriod != calendarState.date) {
+            calendarState.date = changedPeriod
         }
     }
 
@@ -79,7 +79,7 @@ abstract class LinCalendarState {
      * 用于判断当前显示的月份/周。
      * 实际值为 当月第一天/当周第一天。
      */
-    abstract var period: LocalDate
+    abstract var date: LocalDate
 
     @OptIn(ExperimentalFoundationApi::class)
     internal abstract val pagerState: PagerState
@@ -94,18 +94,18 @@ internal class LinCalendarStateImpl(
     override val pagerState: PagerState,
 ) : LinCalendarState() {
 
-    private var _period by mutableStateOf(initialPeriod)
-    override var period: LocalDate
-        get() = _period
+    private var _date by mutableStateOf(initialPeriod)
+    override var date: LocalDate
+        get() = _date
         set(value) {
-            _period = value
+            _date = value
         }
 
     override fun getPeriodByPage(page: Int): LocalDate {
         // todo 未兼容 周时期
         val destMonth = YearMonth.from(initialPeriod).plusMonths((page - initialPage).toLong())
-        if (destMonth == YearMonth.from(period)) {
-            return period
+        if (destMonth == YearMonth.from(date)) {
+            return date
         }
         val destDate = destMonth.atDay(1)
         return destDate

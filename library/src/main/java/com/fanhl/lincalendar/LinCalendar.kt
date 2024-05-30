@@ -58,7 +58,7 @@ private fun LinCalendarPreview() {
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(text = state.period.toString())
+            Text(text = state.date.toString())
         }
         LinCalendar(
             state = state,

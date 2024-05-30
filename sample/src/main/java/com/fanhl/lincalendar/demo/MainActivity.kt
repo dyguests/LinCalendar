@@ -105,11 +105,11 @@ private fun MainScreen(navController: NavHostController) {
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    TextButton(onClick = { state.period = state.period.plusMonths(-1) }) {
+                    TextButton(onClick = { state.date = state.date.plusMonths(-1) }) {
                         Text(text = "Last")
                     }
-                    Text(text = state.period.toString())
-                    TextButton(onClick = { state.period = state.period.plusMonths(1) }) {
+                    Text(text = state.date.toString())
+                    TextButton(onClick = { state.date = state.date.plusMonths(1) }) {
                         Text(text = "Next")
                     }
                 }
@@ -146,6 +146,7 @@ private fun SpeciesScreen() {
         contentPadding = PaddingValues(8.dp)
     ) {
         item { DefaultLinCalendar(state) }
+        item { CustomMonthLinCalendar(state) }
     }
 }
 
@@ -160,6 +161,27 @@ private fun DefaultLinCalendar(state: LinCalendarState) {
         ) {
             Text(
                 text = "Default",
+            )
+            LinCalendar(
+                state = state,
+                modifier = Modifier
+                    .fillMaxWidth(),
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun CustomMonthLinCalendar(state: LinCalendarState) {
+    Card(
+        modifier = Modifier.padding(8.dp),
+    ) {
+        Column(
+            modifier = Modifier.padding(8.dp),
+        ) {
+            Text(
+                text = "Custom Month",
             )
             LinCalendar(
                 state = state,
