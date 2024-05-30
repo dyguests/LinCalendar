@@ -24,7 +24,7 @@ A composable Calendar.
 
     ```gradle
         dependencies {
-            implementation 'com.github.dyguests:LinCalendar:0.1.4'
+            implementation 'com.github.dyguests:LinCalendar:0.3.4'
         }
     ```
 
