@@ -21,18 +21,32 @@ fun rememberLinCalendarState(
     startDate: LocalDate = LocalDate.of(1900, 1, 1),
     endDate: LocalDate = LocalDate.of(2099, 12, 31),
 ): LinCalendarState {
-    val initialPage = 1
+    // Ensure startDate < endDate
+    val (adjustedStartDate, adjustedEndDate) = if (endDate.isBefore(startDate)) {
+        startDate to startDate
+    } else {
+        startDate to endDate
+    }
+
+    // Ensure initialDate is within startDate and endDate
+    val adjustedInitialDate = when {
+        initialDate.isBefore(adjustedStartDate) -> adjustedStartDate
+        initialDate.isAfter(adjustedEndDate) -> adjustedEndDate
+        else -> initialDate
+    }
+
+    val initialPage = YearMonth.from(adjustedStartDate).until(adjustedInitialDate, ChronoUnit.MONTHS).toInt()
     val pagerState = rememberPagerState(
         initialPage = initialPage,
-    ) { 3 }
+    ) { YearMonth.from(adjustedStartDate).until(adjustedEndDate, ChronoUnit.MONTHS).toInt() + 1 }
 
     // todo 基于 option mode 可能是 当月第一天， 也可能是当周第一天。 其中当周第一天需要基于 firstDayOfWeek 来计算
-    val formatInitialPeriod = YearMonth.from(initialDate).atDay(1)
+    // todo 周第一天，需要基于 firstDayOfWeek 来计算
+    val formatInitialDate = YearMonth.from(adjustedInitialDate).atDay(1)
 
     val calendarState = rememberSaveable(saver = LinCalendarStateImpl.Saver) {
-
         LinCalendarStateImpl(
-            initialPeriod = formatInitialPeriod,
+            initialPeriod = formatInitialDate,
             initialPage = initialPage,
             pagerState = pagerState,
             // options = options,
@@ -41,9 +55,9 @@ fun rememberLinCalendarState(
 
     LaunchedEffect(calendarState.period) {
         val yearMonth = YearMonth.from(calendarState.period)
-        val page = YearMonth.from(formatInitialPeriod).until(yearMonth, ChronoUnit.MONTHS).toInt() + 1
-        if (page != pagerState.currentPage) {
-            pagerState.scrollToPage(page)
+        val changedPage = initialPage + YearMonth.from(formatInitialDate).until(yearMonth, ChronoUnit.MONTHS).toInt()
+        if (changedPage != pagerState.currentPage) {
+            pagerState.scrollToPage(changedPage)
         }
     }
 
