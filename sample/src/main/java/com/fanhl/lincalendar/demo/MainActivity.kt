@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -122,9 +121,11 @@ private fun MainScreen(navController: NavHostController) {
                 )
             }
         }
-
-        Button(onClick = { navController.navigate(NAVI_SPECIES) }) {
+        TextButton(onClick = { navController.navigate(NAVI_SPECIES) }) {
             Text(text = "Species")
+        }
+        TextButton(onClick = { navController.navigate(NAVI_INTERACTIONS) }) {
+            Text(text = "Interactions")
         }
     }
 }

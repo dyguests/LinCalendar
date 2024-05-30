@@ -76,7 +76,7 @@ object LinCalendarDefaults {
                 val firstDateOfWeek = firstDayOfMonth.plusDays(firstDayOfMonthAtWeek.toLong())
 
                 AnimatedVisibility(
-                    visible = true,
+                    visible = state.displayMode == LinCalendar.DisplayMode.MONTHLY,
                 ) {
                     if (week <= weeks) {
                         weekField(yearMonth, firstDateOfWeek)
