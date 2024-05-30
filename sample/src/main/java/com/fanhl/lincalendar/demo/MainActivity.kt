@@ -8,10 +8,12 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -33,6 +35,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.fanhl.lincalendar.LinCalendar
+import com.fanhl.lincalendar.LinCalendarState
 import com.fanhl.lincalendar.demo.ui.theme.LinCalendarTheme
 import com.fanhl.lincalendar.rememberLinCalendarState
 
@@ -83,6 +86,7 @@ private const val NAVI_SPECIES = "species"
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun MainScreen(navController: NavHostController) {
+    val state = rememberLinCalendarState()
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -92,7 +96,6 @@ private fun MainScreen(navController: NavHostController) {
         Card(
             modifier = Modifier.padding(8.dp),
         ) {
-            val state = rememberLinCalendarState()
             Column(
                 modifier = Modifier
                     .padding(8.dp),
@@ -135,23 +138,34 @@ private fun MainScreenPreview() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun SpeciesScreen() {
-    // var period by remember { mutableStateOf(LocalDate.now()) }
-    Box(
+    val state = rememberLinCalendarState()
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize(),
-        contentAlignment = Alignment.Center
+        horizontalAlignment = Alignment.CenterHorizontally,
+        contentPadding = PaddingValues(8.dp)
     ) {
-        Card(
+        item { DefaultLinCalendar(state) }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun DefaultLinCalendar(state: LinCalendarState) {
+    Card(
+        modifier = Modifier.padding(8.dp),
+    ) {
+        Column(
             modifier = Modifier.padding(8.dp),
         ) {
-            // LinCalendar(
-            //     period = period,
-            //     onPeriodChange = { period = it },
-            //     modifier = Modifier
-            //         .fillMaxWidth()
-            //         // .height(240.dp)
-            //         .padding(8.dp),
-            // )
+            Text(
+                text = "Default",
+            )
+            LinCalendar(
+                state = state,
+                modifier = Modifier
+                    .fillMaxWidth(),
+            )
         }
     }
 }
