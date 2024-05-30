@@ -246,6 +246,15 @@ fun ExpandableLinCalendar(state: LinCalendarState) {
                 TextButton(onClick = { state.date = state.date.plusMonths(1) }) {
                     Text(text = "Next")
                 }
+                TextButton(onClick = {
+                    state.displayMode = if (state.displayMode == LinCalendar.DisplayMode.MONTHLY) LinCalendar.DisplayMode.WEEKLY
+                    else LinCalendar.DisplayMode.MONTHLY
+                }) {
+                    Text(
+                        text = if (state.displayMode == LinCalendar.DisplayMode.MONTHLY) "MONTHLY"
+                        else "WEEKLY"
+                    )
+                }
             }
             LinCalendar(
                 state = state,
