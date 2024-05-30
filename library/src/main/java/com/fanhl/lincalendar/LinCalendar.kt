@@ -1,22 +1,22 @@
 package com.fanhl.lincalendar
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerScope
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.YearMonth
 import java.util.Locale
 
 /**
@@ -53,21 +53,13 @@ fun LinCalendar(
 private fun LinCalendarPreview() {
     val state = rememberLinCalendarState()
     Column {
-        Row {
-            val periodLastMonth = YearMonth.now().plusMonths(-1).atDay(2)
-            Button(onClick = { state.period = periodLastMonth }) {
-                Text(text = periodLastMonth.toString())
-            }
-            val period = YearMonth.now().atDay(2)
-            Button(onClick = { state.period = period }) {
-                Text(text = period.toString())
-            }
-            val periodNextMonth = YearMonth.now().plusMonths(1).atDay(2)
-            Button(onClick = { state.period = periodNextMonth }) {
-                Text(text = periodNextMonth.toString())
-            }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(text = state.period.toString())
         }
-        Text(text = state.period.toString())
         LinCalendar(
             state = state,
         )
