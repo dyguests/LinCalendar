@@ -26,9 +26,29 @@ A composable Calendar.
         }
     ```
 
+# Structure
+
+- `LinCalendar`
+    - `HorizontalPager` cannot be customized.
+        - `monthFiled`
+            - `weekHeaderField`
+                - `dayHeaderField`
+            - `weekField`
+                - `dayField`
+
 # Usage
 
-TODO
+```kotlin
+val state = rememberLinCalendarState()
+
+LinCalendar(
+    state = state,
+)
+```
+
+# Reference
+
+- TODO
 
 # License
 
