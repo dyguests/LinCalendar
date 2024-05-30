@@ -71,6 +71,7 @@ class MainActivity : ComponentActivity() {
                         NavHost(navController = navController, startDestination = NAVI_MAIN) {
                             composable(NAVI_MAIN) { MainScreen(navController) }
                             composable(NAVI_SPECIES) { SpeciesScreen() }
+                            composable(NAVI_INTERACTIONS) { InteractionsScreen() }
                         }
                     }
                 }
@@ -82,6 +83,7 @@ class MainActivity : ComponentActivity() {
 
 private const val NAVI_MAIN = "main"
 private const val NAVI_SPECIES = "species"
+private const val NAVI_INTERACTIONS = "interactions"
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -150,6 +152,14 @@ private fun SpeciesScreen() {
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+private fun SpeciesScreenPreview() {
+    LinCalendarTheme {
+        SpeciesScreen()
+    }
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun DefaultLinCalendar(state: LinCalendarState) {
@@ -187,6 +197,60 @@ private fun CustomMonthLinCalendar(state: LinCalendarState) {
                 state = state,
                 modifier = Modifier
                     .fillMaxWidth(),
+                // todo
+            )
+        }
+    }
+}
+
+@Composable
+private fun InteractionsScreen() {
+    val state = rememberLinCalendarState()
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        contentPadding = PaddingValues(8.dp)
+    ) {
+        item { ExpandableLinCalendar(state) }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun InteractionsScreenPreview() {
+    LinCalendarTheme {
+        InteractionsScreen()
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun ExpandableLinCalendar(state: LinCalendarState) {
+    Card(
+        modifier = Modifier.padding(8.dp),
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(8.dp),
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                TextButton(onClick = { state.date = state.date.plusMonths(-1) }) {
+                    Text(text = "Last")
+                }
+                Text(text = state.date.toString())
+                TextButton(onClick = { state.date = state.date.plusMonths(1) }) {
+                    Text(text = "Next")
+                }
+            }
+            LinCalendar(
+                state = state,
+                modifier = Modifier
+                    .fillMaxWidth(),
             )
         }
     }
@@ -194,8 +258,9 @@ private fun CustomMonthLinCalendar(state: LinCalendarState) {
 
 @Preview(showBackground = true)
 @Composable
-private fun SpeciesScreenPreview() {
+private fun ExpandableLinCalendarPreview() {
+    val calendarState = rememberLinCalendarState()
     LinCalendarTheme {
-        SpeciesScreen()
+        ExpandableLinCalendar(calendarState)
     }
 }
