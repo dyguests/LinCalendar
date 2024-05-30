@@ -25,7 +25,10 @@ fun LinCalendar(
     state: LinCalendarState,
     modifier: Modifier = Modifier,
     options: LinCalendar.Option = LinCalendarDefaults.option(),
-    monthFiled: @Composable() (PagerScope.(period: LocalDate) -> Unit) = LinCalendarDefaults.monthField(
+    monthFiled: @Composable PagerScope.(
+        state: LinCalendarState,
+        date: LocalDate
+    ) -> Unit = LinCalendarDefaults.monthField(
         options = options, // todo 后续看能否通过 LinCalendarScope 来透传
     ),
 ) {
@@ -39,6 +42,7 @@ fun LinCalendar(
     ) { page ->
         // mode==LinCalendar.Mode.MONTH // todo
         monthFiled(
+            state,
             state.getPeriodByPage(page),
         )
     }

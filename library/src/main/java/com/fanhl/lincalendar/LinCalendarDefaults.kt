@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerScope
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -55,10 +54,11 @@ object LinCalendarDefaults {
             options = options,
         ),
     ): @Composable PagerScope.(
+        state: LinCalendarState,
         /** 当前显示日期；用于判断当前显示的月份/周。（之前用YearMonth，但是无法兼容周视图，这里统一改成 LocalDate） */
-        period: LocalDate,
-    ) -> Unit = { period ->
-        val yearMonth = remember { YearMonth.from(period) }
+        date: LocalDate,
+    ) -> Unit = { state, date ->
+        val yearMonth = remember { YearMonth.from(date) }
         val firstDayOfMonth = remember { yearMonth.atDay(1) }
         val weeks = remember {
             val dayOfWeekOfFirstDay = firstDayOfMonth.dayOfWeek.value
@@ -185,8 +185,10 @@ object LinCalendarDefaults {
 @Preview(showBackground = true)
 @Composable
 private fun MonthFieldPreview() {
-    HorizontalPager(state = rememberPagerState { 1 }) {
+    val calendarState = rememberLinCalendarState()
+    HorizontalPager(state = calendarState.pagerState) {
         LinCalendarDefaults.monthField()(
+            calendarState,
             LocalDate.now(),
         )
     }
@@ -196,8 +198,10 @@ private fun MonthFieldPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun MonthFieldPreview2() {
-    HorizontalPager(state = rememberPagerState { 1 }) {
+    val calendarState = rememberLinCalendarState()
+    HorizontalPager(state = calendarState.pagerState) {
         LinCalendarDefaults.monthField()(
+            calendarState,
             LocalDate.of(2021, 2, 1),
         )
     }
