@@ -37,8 +37,8 @@ fun rememberLinCalendarState(
         )
     }
 
-    LaunchedEffect(calendarState.currentPeriod) {
-        val yearMonth =YearMonth.from(calendarState.currentPeriod)
+    LaunchedEffect(calendarState.period) {
+        val yearMonth = YearMonth.from(calendarState.period)
         val page = YearMonth.from(formatInitialPeriod).until(yearMonth, ChronoUnit.MONTHS).toInt() + 1
         if (page != pagerState.currentPage) {
             pagerState.scrollToPage(page)
@@ -48,8 +48,8 @@ fun rememberLinCalendarState(
     LaunchedEffect(pagerState.currentPage) {
         // todo 如果是 周视图，这里就应该计算周
         val changedPeriod = calendarState.getPeriodByPage(pagerState.currentPage)
-        if (changedPeriod != calendarState.currentPeriod) {
-            calendarState.setPeriodByPager(changedPeriod)
+        if (changedPeriod != calendarState.period) {
+            calendarState.period = changedPeriod
         }
     }
 
@@ -63,15 +63,12 @@ abstract class LinCalendarState {
      * 用于判断当前显示的月份/周。
      * 实际值为 当月第一天/当周第一天。
      */
-    abstract val currentPeriod: LocalDate
-    abstract fun setPeriod(period: LocalDate)
+    abstract var period: LocalDate
 
     @OptIn(ExperimentalFoundationApi::class)
     internal abstract val pagerState: PagerState
 
     internal abstract fun getPeriodByPage(page: Int): LocalDate
-
-    internal abstract fun setPeriodByPager(period: LocalDate)
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -81,26 +78,21 @@ internal class LinCalendarStateImpl(
     override val pagerState: PagerState,
 ) : LinCalendarState() {
 
-    private var _currentPeriod by mutableStateOf(initialPeriod)
-    override val currentPeriod: LocalDate
-        get() = _currentPeriod
-
-    override fun setPeriod(period: LocalDate) {
-        _currentPeriod = period
-    }
+    private var _period by mutableStateOf(initialPeriod)
+    override var period: LocalDate
+        get() = _period
+        set(value) {
+            _period = value
+        }
 
     override fun getPeriodByPage(page: Int): LocalDate {
         // todo 未兼容 周时期
         val destMonth = YearMonth.from(initialPeriod).plusMonths((page - initialPage).toLong())
-        if (destMonth == YearMonth.from(currentPeriod)) {
-            return currentPeriod
+        if (destMonth == YearMonth.from(period)) {
+            return period
         }
         val destDate = destMonth.atDay(1)
         return destDate
-    }
-
-    override fun setPeriodByPager(period: LocalDate) {
-        this._currentPeriod = period
     }
 
     companion object {

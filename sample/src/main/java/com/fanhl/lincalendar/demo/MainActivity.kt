@@ -22,10 +22,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,7 +33,6 @@ import androidx.navigation.compose.rememberNavController
 import com.fanhl.lincalendar.LinCalendar
 import com.fanhl.lincalendar.demo.ui.theme.LinCalendarTheme
 import com.fanhl.lincalendar.rememberLinCalendarState
-import java.time.LocalDate
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -100,7 +95,7 @@ private fun MainScreen(navController: NavHostController) {
                 modifier = Modifier
                     .padding(8.dp),
             ) {
-                Text(text = state.currentPeriod.toString())
+                Text(text = state.period.toString())
                 LinCalendar(
                     state = state,
                     modifier = Modifier

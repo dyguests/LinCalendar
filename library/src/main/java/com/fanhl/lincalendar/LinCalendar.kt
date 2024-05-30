@@ -30,7 +30,6 @@ fun LinCalendar(
     options: LinCalendar.Option = LinCalendarDefaults.option(),
     monthFiled: @Composable() (PagerScope.(period: LocalDate) -> Unit) = LinCalendarDefaults.monthField(
         options = options, // todo 后续看能否通过 LinCalendarScope 来透传
-        // weekHeaderField = LinCalendarDefaults.weekHeaderField(firstDayOfWeek = firstDayOfWeek)
     ),
 ) {
     HorizontalPager(
@@ -56,19 +55,19 @@ private fun LinCalendarPreview() {
     Column {
         Row {
             val periodLastMonth = YearMonth.now().plusMonths(-1).atDay(2)
-            Button(onClick = { state.setPeriod(periodLastMonth) }) {
+            Button(onClick = { state.period = periodLastMonth }) {
                 Text(text = periodLastMonth.toString())
             }
             val period = YearMonth.now().atDay(2)
-            Button(onClick = { state.setPeriod(period) }) {
+            Button(onClick = { state.period = period }) {
                 Text(text = period.toString())
             }
             val periodNextMonth = YearMonth.now().plusMonths(1).atDay(2)
-            Button(onClick = { state.setPeriod(periodNextMonth) }) {
+            Button(onClick = { state.period = periodNextMonth }) {
                 Text(text = periodNextMonth.toString())
             }
         }
-        Text(text = state.currentPeriod.toString())
+        Text(text = state.period.toString())
         LinCalendar(
             state = state,
         )
