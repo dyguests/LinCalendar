@@ -12,6 +12,7 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.temporal.ChronoUnit
+import java.time.temporal.TemporalAdjusters
 import java.time.temporal.WeekFields
 import java.util.Locale
 import kotlin.properties.Delegates
@@ -95,6 +96,7 @@ fun rememberLinCalendarState(
 }
 
 interface LinCalendarState {
+
     /**
      * 当前月/周视图对应的日期。
      */
@@ -104,6 +106,11 @@ interface LinCalendarState {
     val listState: LazyListState
 
     val pageCount: Int
+
+    /**
+     * 基于当前页数，计算对应的日期。
+     */
+    fun getDateByPage(page: Int): LocalDate
 }
 
 internal class LinCalendarStateImpl(
@@ -165,6 +172,19 @@ internal class LinCalendarStateImpl(
 
     override val pageCount: Int
         get() = _pageCount
+
+    override fun getDateByPage(page: Int): LocalDate {
+        return if (_displayMode == LinCalendar.DisplayMode.MONTHLY) {
+            val yearMonth = YearMonth.from(startDate).plusMonths(page.toLong())
+            date.withYear(yearMonth.year).withMonth(yearMonth.monthValue)
+        } else {
+            startDate.plusWeeks(page.toLong())
+                // 先找到这周的第一天
+                .with(TemporalAdjusters.previousOrSame(firstDayOfWeek))
+                // 再找到这周与date相同的周几
+                .with(TemporalAdjusters.nextOrSame(date.dayOfWeek))
+        }
+    }
 
     companion object {
         val Saver = Saver<LinCalendarStateImpl, Map<String, Any>>(
