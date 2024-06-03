@@ -50,7 +50,7 @@ LinCalendar(
 
 # Reference
 
-- TODO
+- [kizitonwose/Calendar](https://github.com/kizitonwose/Calendar)
 
 # License
 
