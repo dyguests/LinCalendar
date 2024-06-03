@@ -88,40 +88,13 @@ private const val NAVI_INTERACTIONS = "interactions"
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun MainScreen(navController: NavHostController) {
-    val state = rememberLinCalendarState()
     Column(
         modifier = Modifier
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        Card(
-            modifier = Modifier.padding(8.dp),
-        ) {
-            Column(
-                modifier = Modifier
-                    .padding(8.dp),
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    TextButton(onClick = { state.date = state.date.plusMonths(-1) }) {
-                        Text(text = "Last")
-                    }
-                    Text(text = state.date.toString())
-                    TextButton(onClick = { state.date = state.date.plusMonths(1) }) {
-                        Text(text = "Next")
-                    }
-                }
-                LinCalendar(
-                    state = state,
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                )
-            }
-        }
+        // TitledCalendar(rememberLinCalendarState())
         TextButton(onClick = { navController.navigate(NAVI_SPECIES) }) {
             Text(text = "Species")
         }
@@ -149,8 +122,9 @@ private fun SpeciesScreen() {
         horizontalAlignment = Alignment.CenterHorizontally,
         contentPadding = PaddingValues(8.dp)
     ) {
-        item { DefaultLinCalendar(state) }
-        item { CustomMonthLinCalendar(state) }
+        item { DefaultCalendar(state) }
+        item { TitledCalendar(state) }
+        item { CustomMonthCalendar(state) }
     }
 }
 
@@ -162,9 +136,8 @@ private fun SpeciesScreenPreview() {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun DefaultLinCalendar(state: LinCalendarState) {
+private fun DefaultCalendar(state: LinCalendarState) {
     Card(
         modifier = Modifier.padding(8.dp),
     ) {
@@ -183,9 +156,40 @@ private fun DefaultLinCalendar(state: LinCalendarState) {
     }
 }
 
+@Composable
+private fun TitledCalendar(state: LinCalendarState) {
+    Card(
+        modifier = Modifier.padding(8.dp),
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(8.dp),
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                TextButton(onClick = { state.date = state.date.plusMonths(-1) }) {
+                    Text(text = "Last")
+                }
+                Text(text = state.date.toString())
+                TextButton(onClick = { state.date = state.date.plusMonths(1) }) {
+                    Text(text = "Next")
+                }
+            }
+            LinCalendar(
+                state = state,
+                modifier = Modifier
+                    .fillMaxWidth(),
+            )
+        }
+    }
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun CustomMonthLinCalendar(state: LinCalendarState) {
+private fun CustomMonthCalendar(state: LinCalendarState) {
     Card(
         modifier = Modifier.padding(8.dp),
     ) {
