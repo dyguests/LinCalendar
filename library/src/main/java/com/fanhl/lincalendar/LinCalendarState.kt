@@ -121,7 +121,7 @@ internal class LinCalendarStateImpl(
         if (destMonth == YearMonth.from(date)) {
             return date
         }
-        val destDate = destMonth.atDay(1)
+        val destDate = date.withYear(destMonth.year).withMonth(destMonth.monthValue)
         return destDate
     }
 
