@@ -269,8 +269,8 @@ fun ExpandableLinCalendar(state: LinCalendarState) {
 @Preview(showBackground = true)
 @Composable
 private fun ExpandableLinCalendarPreview() {
-    val calendarState = rememberLinCalendarState()
+    val state = rememberLinCalendarState()
     LinCalendarTheme {
-        ExpandableLinCalendar(calendarState)
+        ExpandableLinCalendar(state)
     }
 }
