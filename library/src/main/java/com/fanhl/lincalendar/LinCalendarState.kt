@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -26,17 +27,21 @@ fun rememberLinCalendarState(
     initialDisplayMode: LinCalendar.DisplayMode = LinCalendar.DisplayMode.MONTHLY,
 ): LinCalendarState {
     // Ensure startDate < endDate
-    val (adjustedStartDate, adjustedEndDate) = if (endDate.isBefore(startDate)) {
-        startDate to startDate
-    } else {
-        startDate to endDate
+    val (adjustedStartDate, adjustedEndDate) = remember(startDate, endDate) {
+        if (endDate.isBefore(startDate)) {
+            startDate to startDate
+        } else {
+            startDate to endDate
+        }
     }
 
     // Ensure initialDate is within startDate and endDate
-    val adjustedInitialDate = when {
-        initialDate.isBefore(adjustedStartDate) -> adjustedStartDate
-        initialDate.isAfter(adjustedEndDate) -> adjustedEndDate
-        else -> initialDate
+    val adjustedInitialDate = remember(startDate, endDate) {
+        when {
+            initialDate.isBefore(adjustedStartDate) -> adjustedStartDate
+            initialDate.isAfter(adjustedEndDate) -> adjustedEndDate
+            else -> initialDate
+        }
     }
 
     val initialPage = YearMonth.from(adjustedStartDate).until(adjustedInitialDate, ChronoUnit.MONTHS).toInt()
@@ -44,13 +49,9 @@ fun rememberLinCalendarState(
         initialPage = initialPage,
     ) { YearMonth.from(adjustedStartDate).until(adjustedEndDate, ChronoUnit.MONTHS).toInt() + 1 }
 
-    // todo 基于 option mode 可能是 当月第一天， 也可能是当周第一天。 其中当周第一天需要基于 firstDayOfWeek 来计算
-    // todo 周第一天，需要基于 firstDayOfWeek 来计算
-    val formatInitialDate = YearMonth.from(adjustedInitialDate).atDay(1)
-
     val calendarState = rememberSaveable(saver = LinCalendarStateImpl.Saver) {
         LinCalendarStateImpl(
-            initialDate = formatInitialDate,
+            initialDate = adjustedInitialDate,
             initialDisplayMode = initialDisplayMode,
             initialPage = initialPage,
             pagerState = pagerState,
@@ -59,7 +60,7 @@ fun rememberLinCalendarState(
 
     LaunchedEffect(calendarState.date) {
         val yearMonth = YearMonth.from(calendarState.date)
-        val changedPage = initialPage + YearMonth.from(formatInitialDate).until(yearMonth, ChronoUnit.MONTHS).toInt()
+        val changedPage = initialPage + YearMonth.from(adjustedInitialDate).until(yearMonth, ChronoUnit.MONTHS).toInt()
         if (changedPage != pagerState.currentPage) {
             pagerState.scrollToPage(changedPage)
         }
