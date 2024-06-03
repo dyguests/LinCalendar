@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.temporal.WeekFields
 import java.util.Locale
 
 object LinCalendarDefaults {
@@ -58,12 +59,21 @@ object LinCalendarDefaults {
         /** 当前显示日期；用于判断当前显示的月份/周。（之前用YearMonth，但是无法兼容周视图，这里统一改成 LocalDate） */
         date: LocalDate,
     ) -> Unit = { state, date ->
-        val yearMonth = remember { YearMonth.from(date) }
-        val firstDayOfMonth = remember { yearMonth.atDay(1) }
-        val weeks = remember {
+        val yearMonth = remember(date) { YearMonth.from(date) }
+        val firstDayOfMonth = remember(date) { yearMonth.atDay(1) }
+        val weeks = remember(date) {
             val dayOfWeekOfFirstDay = firstDayOfMonth.dayOfWeek.value
             ((dayOfWeekOfFirstDay - options.firstDayOfWeek.value) + yearMonth.lengthOfMonth() + /*向上取整*/6) / 7
         }
+
+        val weekFields = remember {
+            WeekFields.of(options.firstDayOfWeek, 1)
+        }
+        // date 所在周是当月的第几周
+        val weekOfMonth = remember(date) {
+            date.get(weekFields.weekOfMonth())
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -76,7 +86,7 @@ object LinCalendarDefaults {
                 val firstDateOfWeek = firstDayOfMonth.plusDays(firstDayOfMonthAtWeek.toLong())
 
                 AnimatedVisibility(
-                    visible = state.displayMode == LinCalendar.DisplayMode.MONTHLY,
+                    visible = state.displayMode == LinCalendar.DisplayMode.MONTHLY || weekOfMonth == week,
                 ) {
                     if (week <= weeks) {
                         weekField(yearMonth, firstDateOfWeek)
