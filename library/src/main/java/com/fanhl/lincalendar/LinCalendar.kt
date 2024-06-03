@@ -52,7 +52,6 @@ fun LinCalendar(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Preview(showBackground = true)
 @Composable
 private fun LinCalendarPreview() {
