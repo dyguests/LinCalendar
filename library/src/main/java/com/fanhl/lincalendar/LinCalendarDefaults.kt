@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -174,6 +175,8 @@ object LinCalendarDefaults {
         yearMonth: YearMonth,
         localDate: LocalDate,
     ) -> Unit = { yearMonth, localDate ->
+        val now = remember { LocalDate.now() }
+
         Box(
             modifier = Modifier
                 .height(options.rowHeight)
@@ -184,7 +187,11 @@ object LinCalendarDefaults {
             Text(
                 text = localDate.dayOfMonth.toString(),
                 style = TextStyle(
-                    color = if (yearMonth.month == localDate.month) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.secondary,
+                    color = if (localDate == now) MaterialTheme.colorScheme.primary
+                    else MaterialTheme.colorScheme.onSurface,
+                    fontWeight = if (localDate == now) FontWeight.Bold
+                    else if (yearMonth.month == localDate.month) FontWeight.Normal
+                    else FontWeight.Light,
                 ),
             )
         }
