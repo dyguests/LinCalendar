@@ -10,8 +10,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.YearMonth
+import java.time.temporal.ChronoUnit
 import java.time.temporal.WeekFields
 import java.util.Locale
+import kotlin.properties.Delegates
 
 /**
  * @param initialDate 初始日期 用于判断当前显示的月份/周。（之前用YearMonth，但是无法兼容周视图，这里统一改成 LocalDate）
@@ -99,6 +102,8 @@ interface LinCalendarState {
     var displayMode: LinCalendar.DisplayMode
 
     val listState: LazyListState
+
+    val pageCount: Int
 }
 
 internal class LinCalendarStateImpl(
@@ -120,10 +125,38 @@ internal class LinCalendarStateImpl(
     override var displayMode: LinCalendar.DisplayMode
         get() = _displayMode
         set(value) {
+            if (_displayMode == value) {
+                return
+            }
             _displayMode = value
+
+            _pageCount = calculatePageCount()
         }
 
     override val listState = LazyListState()
+
+    private var _monthPageCount by Delegates.notNull<Int>()
+    private var _weekPageCount by Delegates.notNull<Int>()
+
+    init {
+        _monthPageCount = ChronoUnit.MONTHS.between(YearMonth.from(startDate), YearMonth.from(endDate)).toInt() + 1
+
+        val weekFields = WeekFields.of(firstDayOfWeek, 1)
+        val startWeek = startDate.with(weekFields.dayOfWeek(), 1)
+        val endWeek = endDate.with(weekFields.dayOfWeek(), 1)
+        _weekPageCount = ChronoUnit.WEEKS.between(startWeek, endWeek).toInt() + 1
+    }
+
+    private var _pageCount by mutableStateOf(calculatePageCount())
+
+    private fun calculatePageCount() = if (_displayMode == LinCalendar.DisplayMode.MONTHLY) {
+        _monthPageCount
+    } else {
+        _weekPageCount
+    }
+
+    override val pageCount: Int
+        get() = _pageCount
 
     companion object {
         val Saver = Saver<LinCalendarStateImpl, Map<String, Any>>(

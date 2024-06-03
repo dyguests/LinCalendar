@@ -37,6 +37,7 @@ import com.fanhl.lincalendar.LinCalendar
 import com.fanhl.lincalendar.LinCalendarState
 import com.fanhl.lincalendar.demo.ui.theme.LinCalendarTheme
 import com.fanhl.lincalendar.rememberLinCalendarState
+import java.time.YearMonth
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -206,7 +207,11 @@ private fun CustomMonthLinCalendar(state: LinCalendarState) {
 
 @Composable
 private fun InteractionsScreen() {
-    val state = rememberLinCalendarState()
+    val now = YearMonth.now()
+    val state = rememberLinCalendarState(
+        startDate = now.plusMonths(-1).atDay(1),
+        endDate = now.plusMonths(1).atEndOfMonth(),
+    )
     LazyColumn(
         modifier = Modifier
             .fillMaxSize(),

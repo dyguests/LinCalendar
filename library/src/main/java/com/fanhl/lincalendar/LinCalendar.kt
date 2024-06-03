@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.pager.PagerScope
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,7 +26,7 @@ fun LinCalendar(
     state: LinCalendarState,
     modifier: Modifier = Modifier,
     options: LinCalendar.Option = LinCalendarDefaults.option(),
-    monthFiled: @Composable PagerScope.(
+    monthFiled: @Composable LazyItemScope.(
         state: LinCalendarState,
         date: LocalDate
     ) -> Unit = LinCalendarDefaults.monthField(
@@ -46,7 +46,7 @@ fun LinCalendar(
         ) { index ->
             monthFiled(
                 state,
-                state.getDateByPage(page),
+                state.date,                // todo state.getDateByPage(page),
             )
         }
     }

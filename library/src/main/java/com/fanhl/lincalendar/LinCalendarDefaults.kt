@@ -11,8 +11,8 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PagerScope
+import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,7 +45,6 @@ object LinCalendarDefaults {
         locale = locale
     )
 
-    @OptIn(ExperimentalFoundationApi::class)
     fun monthField(
         modifier: Modifier = Modifier,
         options: LinCalendar.Option = option(),
@@ -55,7 +54,7 @@ object LinCalendarDefaults {
         weekField: @Composable AnimatedVisibilityScope.(yearMonth: YearMonth, firstDateOfWeek: LocalDate) -> Unit = weekField(
             options = options,
         ),
-    ): @Composable PagerScope.(
+    ): @Composable LazyItemScope.(
         state: LinCalendarState,
         /** 当前显示日期；用于判断当前显示的月份/周。（之前用YearMonth，但是无法兼容周视图，这里统一改成 LocalDate） */
         date: LocalDate,
@@ -203,11 +202,13 @@ object LinCalendarDefaults {
 @Composable
 private fun MonthFieldPreview() {
     val calendarState = rememberLinCalendarState()
-    HorizontalPager(state = calendarState.pagerState) {
-        LinCalendarDefaults.monthField()(
-            calendarState,
-            LocalDate.now(),
-        )
+    LazyRow {
+        item {
+            LinCalendarDefaults.monthField()(
+                calendarState,
+                LocalDate.now(),
+            )
+        }
     }
 }
 
@@ -216,11 +217,13 @@ private fun MonthFieldPreview() {
 @Composable
 private fun MonthFieldPreview2() {
     val calendarState = rememberLinCalendarState()
-    HorizontalPager(state = calendarState.pagerState) {
-        LinCalendarDefaults.monthField()(
-            calendarState,
-            LocalDate.of(2021, 2, 1),
-        )
+    LazyRow {
+        item {
+            LinCalendarDefaults.monthField()(
+                calendarState,
+                LocalDate.of(2021, 2, 1),
+            )
+        }
     }
 }
 
