@@ -133,7 +133,15 @@ internal class LinCalendarStateImpl(
             _pageCount = calculatePageCount()
         }
 
-    override val listState = LazyListState()
+    override val listState = LazyListState(
+        firstVisibleItemIndex = if (_displayMode == LinCalendar.DisplayMode.MONTHLY) {
+            ChronoUnit.MONTHS.between(YearMonth.from(startDate), YearMonth.from(_date)).toInt()
+        } else {
+            val weekFields = WeekFields.of(firstDayOfWeek, 1)
+            val startWeek = startDate.with(weekFields.dayOfWeek(), 1)
+            ChronoUnit.WEEKS.between(startWeek, _date.with(weekFields.dayOfWeek(), 1)).toInt()
+        }
+    )
 
     private var _monthPageCount by Delegates.notNull<Int>()
     private var _weekPageCount by Delegates.notNull<Int>()
