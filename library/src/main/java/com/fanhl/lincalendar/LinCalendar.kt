@@ -1,12 +1,13 @@
 package com.fanhl.lincalendar
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.pager.PagerScope
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,19 +33,22 @@ fun LinCalendar(
         options = options, // todo 后续看能否通过 LinCalendarScope 来透传
     ),
 ) {
-    HorizontalPager(
-        state = state.pagerState,
+    LazyRow(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
             .then(modifier),
-        beyondBoundsPageCount = 1,
-    ) { page ->
-        // mode==LinCalendar.Mode.MONTH // todo
-        monthFiled(
-            state,
-            state.getDateByPage(page),
-        )
+        state = state.listState,
+        flingBehavior = rememberSnapFlingBehavior(lazyListState = state.listState),
+    ) {
+        items(
+            count = state.pageCount,
+        ) { index ->
+            monthFiled(
+                state,
+                state.getDateByPage(page),
+            )
+        }
     }
 }
 

@@ -1,6 +1,6 @@
 package com.fanhl.lincalendar
 
-import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -97,6 +97,8 @@ interface LinCalendarState {
      */
     var date: LocalDate
     var displayMode: LinCalendar.DisplayMode
+
+    val listState: LazyListState
 }
 
 internal class LinCalendarStateImpl(
@@ -121,7 +123,7 @@ internal class LinCalendarStateImpl(
             _displayMode = value
         }
 
-    // todo see sample9
+    override val listState = LazyListState()
 
     companion object {
         val Saver = Saver<LinCalendarStateImpl, Map<String, Any>>(
