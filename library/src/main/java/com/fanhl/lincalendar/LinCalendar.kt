@@ -43,7 +43,7 @@ fun LinCalendar(
         // mode==LinCalendar.Mode.MONTH // todo
         monthFiled(
             state,
-            state.getPeriodByPage(page),
+            state.getDateByPage(page),
         )
     }
 }

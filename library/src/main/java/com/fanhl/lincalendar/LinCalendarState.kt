@@ -36,7 +36,7 @@ fun rememberLinCalendarState(
     }
 
     // Ensure initialDate is within startDate and endDate
-    val adjustedInitialDate = remember(startDate, endDate) {
+    val adjustedInitialDate = remember(startDate, endDate, initialDate) {
         when {
             initialDate.isBefore(adjustedStartDate) -> adjustedStartDate
             initialDate.isAfter(adjustedEndDate) -> adjustedEndDate
@@ -68,7 +68,7 @@ fun rememberLinCalendarState(
 
     LaunchedEffect(pagerState.currentPage) {
         // todo 如果是 周视图，这里就应该计算周
-        val changedPeriod = calendarState.getPeriodByPage(pagerState.currentPage)
+        val changedPeriod = calendarState.getDateByPage(pagerState.currentPage)
         if (changedPeriod != calendarState.date) {
             calendarState.date = changedPeriod
         }
@@ -90,7 +90,7 @@ abstract class LinCalendarState {
     @OptIn(ExperimentalFoundationApi::class)
     internal abstract val pagerState: PagerState
 
-    internal abstract fun getPeriodByPage(page: Int): LocalDate
+    internal abstract fun getDateByPage(page: Int): LocalDate
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -115,7 +115,7 @@ internal class LinCalendarStateImpl(
             _displayMode = value
         }
 
-    override fun getPeriodByPage(page: Int): LocalDate {
+    override fun getDateByPage(page: Int): LocalDate {
         // todo 未兼容 周时期
         val destMonth = YearMonth.from(initialDate).plusMonths((page - initialPage).toLong())
         if (destMonth == YearMonth.from(date)) {
