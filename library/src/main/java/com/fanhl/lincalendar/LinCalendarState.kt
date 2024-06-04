@@ -2,6 +2,7 @@ package com.fanhl.lincalendar
 
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,7 +52,7 @@ fun rememberLinCalendarState(
 
     // endregion ---------- adjusted ----------
 
-    return rememberSaveable(saver = LinCalendarStateImpl.Saver) {
+    val state = rememberSaveable(saver = LinCalendarStateImpl.Saver) {
         LinCalendarStateImpl(
             initialDate = adjustedInitialDate,
             startDate = adjustedStartDate,
@@ -60,6 +61,24 @@ fun rememberLinCalendarState(
             firstDayOfWeek = firstDayOfWeek,
         )
     }
+
+    LaunchedEffect(state.date) {
+        val page = state.getPageByDate(state.date)
+        if (state.listState.firstVisibleItemIndex == page) {
+            return@LaunchedEffect
+        }
+        state.listState.scrollToItem(page)
+    }
+
+    LaunchedEffect(state.listState.firstVisibleItemIndex) {
+        val date = state.getDateByPage(state.listState.firstVisibleItemIndex)
+        if (state.date == date) {
+            return@LaunchedEffect
+        }
+        state.date = date
+    }
+
+    return state
 
     // LaunchedEffect(calendarState.date) {
     //     val yearMonth = YearMonth.from(calendarState.date)
@@ -93,6 +112,11 @@ interface LinCalendarState {
      * 基于当前页数，计算对应的日期。
      */
     fun getDateByPage(page: Int): LocalDate
+
+    /**
+     * 基于日期，计算对应的页数。
+     */
+    fun getPageByDate(date: LocalDate): Int
 }
 
 @Stable
@@ -128,15 +152,7 @@ internal class LinCalendarStateImpl(
             _pageCount = calculatePageCount()
         }
 
-    override val listState = LazyListState(firstVisibleItemIndex = calculateFirstVisibleItemIndex())
-
-    private fun calculateFirstVisibleItemIndex() = if (_displayMode == LinCalendar.DisplayMode.MONTHLY) {
-        ChronoUnit.MONTHS.between(YearMonth.from(startDate), YearMonth.from(_date)).toInt()
-    } else {
-        val weekFields = WeekFields.of(firstDayOfWeek, 1)
-        val startWeek = startDate.with(weekFields.dayOfWeek(), 1)
-        ChronoUnit.WEEKS.between(startWeek, _date.with(weekFields.dayOfWeek(), 1)).toInt()
-    }
+    override val listState = LazyListState(firstVisibleItemIndex = getPageByDate(_date))
 
     private var _monthPageCount by Delegates.notNull<Int>()
     private var _weekPageCount by Delegates.notNull<Int>()
@@ -171,6 +187,16 @@ internal class LinCalendarStateImpl(
                 .with(TemporalAdjusters.previousOrSame(firstDayOfWeek))
                 // 再找到这周与date相同的周几
                 .with(TemporalAdjusters.nextOrSame(date.dayOfWeek))
+        }
+    }
+
+    override fun getPageByDate(date: LocalDate): Int {
+        return if (_displayMode == LinCalendar.DisplayMode.MONTHLY) {
+            ChronoUnit.MONTHS.between(YearMonth.from(startDate), YearMonth.from(date)).toInt()
+        } else {
+            val weekFields = WeekFields.of(firstDayOfWeek, 1)
+            val startWeek = startDate.with(weekFields.dayOfWeek(), 1)
+            ChronoUnit.WEEKS.between(startWeek, date.with(weekFields.dayOfWeek(), 1)).toInt()
         }
     }
 
