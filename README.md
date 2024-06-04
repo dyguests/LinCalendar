@@ -76,15 +76,16 @@ Therefore, you cannot set the height of Calendar directly, but use `headerHeight
 
 ```kotlin
 enum class WeekDisplayMode {
-    // 高度不变，空余第五周
+    // Fixed height, leaving the fifth week empty
     FIXED_HEIGHT,
 
-    // 高度不变，按周平分高度
+    // Fixed height, equally dividing height by weeks
     EQUAL_HEIGHT, // todo impl
 
-    // 高度按当月有几周来动态适配
+    // Dynamic height, adapting to the number of weeks in the month
     DYNAMIC_HEIGHT // todo impl
 }
+
 ```
 
 # Custom composable
