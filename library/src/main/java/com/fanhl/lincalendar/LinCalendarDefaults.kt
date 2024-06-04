@@ -49,7 +49,6 @@ object LinCalendarDefaults {
 
 
     @OptIn(ExperimentalFoundationApi::class)
-    @Composable
     fun monthsField(
         state: LinCalendarState,
         modifier: Modifier = Modifier,

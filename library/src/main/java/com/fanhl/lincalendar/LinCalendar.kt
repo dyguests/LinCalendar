@@ -21,9 +21,6 @@ fun LinCalendar(
     modifier: Modifier = Modifier,
     monthsField: @Composable () -> Unit = LinCalendarDefaults.monthsField(
         state = state,
-        monthFiled = LinCalendarDefaults.monthField(
-            state = state,
-        ),
     ),
 ) {
     monthsField()

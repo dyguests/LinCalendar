@@ -416,6 +416,10 @@ private fun customDayField(state: LinCalendarState): @Composable RowScope.(yearM
 
 @Composable
 private fun HighlightCalendar(state: LinCalendarState) {
+    val dayField = LinCalendarDefaults.dayField(
+        state = state,
+    )
+
     Card(
         modifier = Modifier.padding(8.dp),
     ) {
@@ -427,8 +431,16 @@ private fun HighlightCalendar(state: LinCalendarState) {
             )
             LinCalendar(
                 state = state,
-                modifier = Modifier
-                    .fillMaxWidth(),
+                monthsField = LinCalendarDefaults.monthsField(
+                    state = state,
+                    monthFiled = LinCalendarDefaults.monthField(
+                        state = state,
+                        weekField = LinCalendarDefaults.weekField(
+                            state = state,
+                            dayField = dayField
+                        ),
+                    ),
+                ),
             )
         }
     }

@@ -96,7 +96,81 @@ LinCalendar(
 
 If you look at the source code, you can see that the above code is equivalent to:
 
+```kotlin
+LinCalendar(
+    state = state,
+    monthsField = LinCalendarDefaults.monthsField(
+        state = state,
+        monthFiled = LinCalendarDefaults.monthField(
+            state = state,
+        ),
+    ),
+)
+```
 
+also equivalent to:
+
+```kotlin
+LinCalendar(
+    state = state,
+    monthsField = LinCalendarDefaults.monthsField(
+        state = state,
+        monthFiled = LinCalendarDefaults.monthField(
+            state = state,
+        ),
+    ),
+)
+```
+
+... equivalent to:
+
+```kotlin
+LinCalendar(
+    state = state,
+    monthsField = LinCalendarDefaults.monthsField(
+        state = state,
+        monthFiled = LinCalendarDefaults.monthField(
+            state = state,
+            weekField = LinCalendarDefaults.weekField(
+                state = state,
+                dayField = LinCalendarDefaults.dayField(
+                    state = state,
+                )
+            ),
+        ),
+    ),
+)
+```
+
+To highlighted background to today's day, You need to custom `dayField`, change code to this:
+
+```kotlin
+val dayField = LinCalendarDefaults.dayField(
+    state = state,
+)
+
+LinCalendar(
+    state = state,
+    monthsField = LinCalendarDefaults.monthsField(
+        state = state,
+        monthFiled = LinCalendarDefaults.monthField(
+            state = state,
+            weekField = LinCalendarDefaults.weekField(
+                state = state,
+                dayField = dayField
+            ),
+        ),
+    ),
+)
+```
+
+Now we focus on `dayField`
+
+**Step 3**
+
+Inline the function `LinCalendarDefaults.dayField`.(You can also copy the source code of `LinCalendarDefaults.dayField`)
+
+```kotlin
 
 # Todo List
 
