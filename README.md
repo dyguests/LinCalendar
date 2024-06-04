@@ -1,6 +1,7 @@
 # LinCalendar
 
 [![](https://jitpack.io/v/dyguests/LinCalendar.svg)](https://jitpack.io/#dyguests/LinCalendar)
+[![](https://img.shields.io/badge/license-MIT-blue)](LICENSE.md)
 
 A composable Calendar.
 
@@ -163,7 +164,7 @@ val dayField = LinCalendarDefaults.dayField(
 
 LinCalendar(
     // ...
-                dayField = dayField
+    dayField = dayField
     // ...
 )
 ```
@@ -203,26 +204,26 @@ Now you can add a highlighted background to today.
 
 ```kotlin
     val dayField: @Composable RowScope.(YearMonth, LocalDate) -> Unit = { yearMonth: YearMonth, localDate: LocalDate ->
+    // ...
+    Box(
         // ...
-        Box(
-            // ...
-        ) {
-            if (localDate == now) {
-                Box(
-                    modifier = Modifier
-                        .size(32.dp)
-                        .background(Color.Red, CircleShape)
-                )
-            }
-            Text(
-                // ...
-                style = TextStyle(
-                    color = if (localDate == now) Color.White
-                    // ...
-                ),
+    ) {
+        if (localDate == now) {
+            Box(
+                modifier = Modifier
+                    .size(32.dp)
+                    .background(Color.Red, CircleShape)
             )
         }
+        Text(
+            // ...
+            style = TextStyle(
+                color = if (localDate == now) Color.White
+                // ...
+            ),
+        )
     }
+}
 ```
 
 <img src="https://github.com/dyguests/LinCalendar/assets/7933189/0769bdb9-a2d1-426d-9d55-47d039c45e2a" alt="default" width="360"/>
@@ -239,4 +240,4 @@ That's it.
 
 # License
 
-[MIT LICENSE](LICENSE)
+[MIT LICENSE](LICENSE.md)
