@@ -18,12 +18,12 @@ import java.util.Locale
 fun LinCalendar(
     state: LinCalendarState,
     modifier: Modifier = Modifier,
-    options: LinCalendar.Option = LinCalendarDefaults.option(),
+    option: LinCalendar.Option = LinCalendarDefaults.option(),
     monthsField: @Composable () -> Unit = LinCalendarDefaults.monthsField(
         state = state,
-        options = options,
+        option = option,
         monthFiled = LinCalendarDefaults.monthField(
-            options = options,
+            option = option,
         ),
     ),
 ) {

@@ -34,6 +34,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.fanhl.lincalendar.LinCalendar
+import com.fanhl.lincalendar.LinCalendarDefaults
 import com.fanhl.lincalendar.LinCalendarState
 import com.fanhl.lincalendar.demo.ui.theme.LinCalendarTheme
 import com.fanhl.lincalendar.rememberLinCalendarState
@@ -85,7 +86,6 @@ private const val NAVI_MAIN = "main"
 private const val NAVI_SPECIES = "species"
 private const val NAVI_INTERACTIONS = "interactions"
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun MainScreen(navController: NavHostController) {
     Column(
@@ -190,6 +190,10 @@ private fun TitledCalendar(state: LinCalendarState) {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun CustomMonthCalendar(state: LinCalendarState) {
+    val monthsField = LinCalendarDefaults.monthsField(
+        state = state,
+        monthFiled = LinCalendarDefaults.monthField(),
+    )
     Card(
         modifier = Modifier.padding(8.dp),
     ) {
@@ -203,9 +207,18 @@ private fun CustomMonthCalendar(state: LinCalendarState) {
                 state = state,
                 modifier = Modifier
                     .fillMaxWidth(),
-                // todo
+                monthsField = monthsField,
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun CustomMonthCalendarPreview() {
+    val state = rememberLinCalendarState()
+    LinCalendarTheme {
+        CustomMonthCalendar(state)
     }
 }
 

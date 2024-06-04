@@ -31,7 +31,7 @@ A composable Calendar.
 # Structure
 
 - `LinCalendar`
-    - `HorizontalPager` cannot be customized.
+    - `monthsField`
         - `monthFiled`
             - `weekHeaderField`
                 - `dayHeaderField`
