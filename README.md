@@ -5,6 +5,7 @@
 A composable Calendar.
 
 <img src="https://github.com/dyguests/LinCalendar/assets/7933189/c3f2d0ab-ed8a-429c-82ba-d672e9d65324" alt="default" width="360"/>
+<img src="https://github.com/dyguests/LinCalendar/assets/7933189/f96b275b-2ba1-40b3-895e-0026c5267460" alt="default" width="360"/>
 
 # Dependency
 
