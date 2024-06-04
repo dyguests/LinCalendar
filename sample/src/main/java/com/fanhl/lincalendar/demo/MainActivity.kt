@@ -4,41 +4,22 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.fanhl.lincalendar.LinCalendar
-import com.fanhl.lincalendar.LinCalendarDefaults
-import com.fanhl.lincalendar.LinCalendarState
 import com.fanhl.lincalendar.demo.ui.theme.LinCalendarTheme
-import com.fanhl.lincalendar.rememberLinCalendarState
-import java.time.YearMonth
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -79,220 +60,8 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
 }
 
 private const val NAVI_MAIN = "main"
-private const val NAVI_SPECIES = "species"
-private const val NAVI_INTERACTIONS = "interactions"
-
-@Composable
-private fun MainScreen(navController: NavHostController) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-        // TitledCalendar(rememberLinCalendarState())
-        TextButton(onClick = { navController.navigate(NAVI_SPECIES) }) {
-            Text(text = "Species")
-        }
-        TextButton(onClick = { navController.navigate(NAVI_INTERACTIONS) }) {
-            Text(text = "Interactions")
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun MainScreenPreview() {
-    LinCalendarTheme {
-        MainScreen(rememberNavController())
-    }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-private fun SpeciesScreen() {
-    val state = rememberLinCalendarState()
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        contentPadding = PaddingValues(8.dp)
-    ) {
-        item { DefaultCalendar(state) }
-        item { TitledCalendar(state) }
-        item { CustomMonthCalendar(state) }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun SpeciesScreenPreview() {
-    LinCalendarTheme {
-        SpeciesScreen()
-    }
-}
-
-@Composable
-private fun DefaultCalendar(state: LinCalendarState) {
-    Card(
-        modifier = Modifier.padding(8.dp),
-    ) {
-        Column(
-            modifier = Modifier.padding(8.dp),
-        ) {
-            Text(
-                text = "Default",
-            )
-            LinCalendar(
-                state = state,
-                modifier = Modifier
-                    .fillMaxWidth(),
-            )
-        }
-    }
-}
-
-@Composable
-private fun TitledCalendar(state: LinCalendarState) {
-    Card(
-        modifier = Modifier.padding(8.dp),
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(8.dp),
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                TextButton(onClick = { state.date = state.date.plusMonths(-1) }) {
-                    Text(text = "Last")
-                }
-                Text(text = state.date.toString())
-                TextButton(onClick = { state.date = state.date.plusMonths(1) }) {
-                    Text(text = "Next")
-                }
-            }
-            LinCalendar(
-                state = state,
-                modifier = Modifier
-                    .fillMaxWidth(),
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-private fun CustomMonthCalendar(state: LinCalendarState) {
-    val monthsField = LinCalendarDefaults.monthsField(
-        state = state,
-        monthFiled = LinCalendarDefaults.monthField(),
-    )
-    Card(
-        modifier = Modifier.padding(8.dp),
-    ) {
-        Column(
-            modifier = Modifier.padding(8.dp),
-        ) {
-            Text(
-                text = "Custom Month",
-            )
-            LinCalendar(
-                state = state,
-                modifier = Modifier
-                    .fillMaxWidth(),
-                monthsField = monthsField,
-            )
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun CustomMonthCalendarPreview() {
-    val state = rememberLinCalendarState()
-    LinCalendarTheme {
-        CustomMonthCalendar(state)
-    }
-}
-
-@Composable
-private fun InteractionsScreen() {
-    val now = YearMonth.now()
-    val state = rememberLinCalendarState(
-        startDate = now.plusMonths(-1).atDay(1),
-        endDate = now.plusMonths(1).atEndOfMonth(),
-    )
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        contentPadding = PaddingValues(8.dp)
-    ) {
-        item { ExpandableLinCalendar(state) }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun InteractionsScreenPreview() {
-    LinCalendarTheme {
-        InteractionsScreen()
-    }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun ExpandableLinCalendar(state: LinCalendarState) {
-    Card(
-        modifier = Modifier.padding(8.dp),
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(8.dp),
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                TextButton(onClick = { state.date = state.date.plusMonths(-1) }) {
-                    Text(text = "Last")
-                }
-                Text(text = state.date.toString())
-                TextButton(onClick = { state.date = state.date.plusMonths(1) }) {
-                    Text(text = "Next")
-                }
-                TextButton(onClick = {
-                    state.displayMode = if (state.displayMode == LinCalendar.DisplayMode.MONTHLY) LinCalendar.DisplayMode.WEEKLY
-                    else LinCalendar.DisplayMode.MONTHLY
-                }) {
-                    Text(
-                        text = if (state.displayMode == LinCalendar.DisplayMode.MONTHLY) "MONTHLY"
-                        else "WEEKLY"
-                    )
-                }
-            }
-            LinCalendar(
-                state = state,
-                modifier = Modifier
-                    .fillMaxWidth(),
-            )
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun ExpandableLinCalendarPreview() {
-    val state = rememberLinCalendarState()
-    LinCalendarTheme {
-        ExpandableLinCalendar(state)
-    }
-}
+const val NAVI_SPECIES = "species"
+const val NAVI_INTERACTIONS = "interactions"

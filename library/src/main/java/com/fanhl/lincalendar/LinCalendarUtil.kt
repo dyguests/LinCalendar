@@ -6,7 +6,7 @@ import java.time.temporal.WeekFields
 internal object LinCalendarUtil {
 }
 
-internal fun LinCalendarState.getKey(page: Int): Any = getDateByPage(page).let { date ->
+fun LinCalendarState.getKey(page: Int): Any = getDateByPage(page).let { date ->
     return when (displayMode) {
         LinCalendar.DisplayMode.MONTHLY -> YearMonth.from(date)
         LinCalendar.DisplayMode.WEEKLY -> {
