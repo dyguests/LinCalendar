@@ -66,6 +66,7 @@ fun SpeciesScreen() {
         item { DefaultCalendar(state) }
         item { TitledCalendar(state) }
         item { CustomCalendar() }
+        item { HighlightCalendar(state) }
     }
 }
 
@@ -411,3 +412,32 @@ private fun customDayField(state: LinCalendarState): @Composable RowScope.(yearM
             }
         }
     }
+
+
+@Composable
+private fun HighlightCalendar(state: LinCalendarState) {
+    Card(
+        modifier = Modifier.padding(8.dp),
+    ) {
+        Column(
+            modifier = Modifier.padding(8.dp),
+        ) {
+            Text(
+                text = "Highlight Today",
+            )
+            LinCalendar(
+                state = state,
+                modifier = Modifier
+                    .fillMaxWidth(),
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun HighlightCalendarPreview() {
+    LinCalendarTheme {
+        HighlightCalendar(rememberLinCalendarState())
+    }
+}

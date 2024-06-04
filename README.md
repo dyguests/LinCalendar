@@ -30,16 +30,6 @@ A composable Calendar.
         }
     ```
 
-# Structure
-
-- `LinCalendar`
-    - `monthsField`
-        - `monthFiled`
-            - `weekHeaderField`
-                - `dayHeaderField`
-            - `weekField`
-                - `dayField`
-
 # Usage
 
 ```kotlin
@@ -49,6 +39,64 @@ LinCalendar(
     state = state,
 )
 ```
+
+# Properties
+
+```kotlin
+fun rememberLinCalendarState(
+    initialDate: LocalDate = LocalDate.now(),
+    startDate: LocalDate = LocalDate.of(1900, 1, 1),
+    endDate: LocalDate = LocalDate.of(2099, 12, 31),
+    initialDisplayMode: LinCalendar.DisplayMode = LinCalendar.DisplayMode.MONTHLY,
+    option: LinCalendar.Option = LinCalendarDefaults.option(),
+): LinCalendarState
+```
+
+```kotlin
+data class Option(
+    val headerHeight: Dp = 32.dp,
+    val rowHeight: Dp = 36.dp,
+    val firstDayOfWeek: DayOfWeek = DayOfWeek.MONDAY,
+    val weekDisplayMode: WeekDisplayMode = WeekDisplayMode.FIXED_HEIGHT,
+    val locale: Locale = Locale.getDefault(),
+)
+```
+
+# Custom composable
+
+Each part of LinCalendar is composable, so you can customize each part yourself.
+
+###### Structure
+
+- `LinCalendar`
+    - `monthsField`
+        - `monthFiled`
+            - `weekHeaderField`
+                - `dayHeaderField`
+            - `weekField`
+                - `dayField`
+
+###### Custom Example
+
+Add a highlighted background to today's day of the calendar.
+
+**Step 1**
+
+Add LinCalendar
+
+```kotlin
+val state = rememberLinCalendarState()
+
+LinCalendar(
+    state = state,
+)
+```
+
+**Step 2**
+
+If you look at the source code, you can see that the above code is equivalent to:
+
+
 
 # Todo List
 
