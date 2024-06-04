@@ -1,9 +1,11 @@
 package com.fanhl.lincalendar.demo
 
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,6 +13,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,14 +24,18 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -44,6 +52,7 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.temporal.WeekFields
+import java.util.Locale
 
 @Composable
 fun SpeciesScreen() {
@@ -147,9 +156,14 @@ private fun CustomCalendar() {
                     modifier = Modifier.background(Color(0x8DDF963D), CircleShape),
                     monthFiled = customMonthField(
                         state = state,
-                        weekHeaderField = customWeekHeaderField(state),
-                        weekField = customWeekField(state)
-                    )
+                        weekHeaderField = customWeekHeaderField(
+                            state,
+                            dayHeaderField = customDayHeaderField(state),
+                        ),
+                        weekField = customWeekField(
+                            dayField = customDayField(state),
+                        ),
+                    ),
                 ),
             )
         }
@@ -265,23 +279,135 @@ private fun customMonthField(
 }
 
 @Composable
-private fun customWeekHeaderField(state: LinCalendarState) = LinCalendarDefaults.weekHeaderField(
-    state = state,
-    dayHeaderField = customDayHeaderField(state)
-)
+private fun customWeekHeaderField(
+    state: LinCalendarState,
+    dayHeaderField: @Composable RowScope.(dayOfWeek: DayOfWeek) -> Unit
+): @Composable ColumnScope.() -> Unit = {
+    val sortedDaysOfWeek = remember {
+        DayOfWeek.entries.run {
+            slice(state.option.firstDayOfWeek.ordinal until size) + slice(0 until state.option.firstDayOfWeek.ordinal)
+        }
+    }
+    Row(
+        modifier = Modifier
+            .height(state.option.headerHeight)
+            .border(2.dp, Color(0xC9F84323))
+            .then(Modifier),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        sortedDaysOfWeek.forEach {
+            dayHeaderField(it)
+        }
+    }
+}
 
 @Composable
-private fun customDayHeaderField(state: LinCalendarState) = LinCalendarDefaults.dayHeaderField(
-    state = state,
-)
+private fun customDayHeaderField(
+    state: LinCalendarState,
+): @Composable RowScope.(dayOfWeek: DayOfWeek) -> Unit = { dayOfWeek ->
+    val locale = remember { Locale.getDefault() }
+    Box(
+        modifier = Modifier
+            .fillMaxHeight()
+            .weight(dayOfWeek.value + 3f)
+            .background(Color(0xC9F84323), CircleShape)
+            .then(Modifier),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = when (dayOfWeek.value) {
+                1 -> "1"
+                2 -> "Ⅱ"
+                3 -> "三"
+                4 -> "THU"
+                5 -> "friday"
+                6 -> "星期六"
+                else -> dayOfWeek.getDisplayName(java.time.format.TextStyle.SHORT, locale)
+            },
+            style = TextStyle(),
+        )
+    }
+}
 
 @Composable
-private fun customWeekField(state: LinCalendarState) = LinCalendarDefaults.weekField(
-    state = state,
-    dayField = customDayField(state)
-)
+private fun customWeekField(
+    dayField: @Composable RowScope.(yearMonth: YearMonth, localDate: LocalDate) -> Unit
+): @Composable AnimatedVisibilityScope.(YearMonth, LocalDate) -> Unit =
+    @androidx.compose.runtime.Composable { yearMonth: YearMonth, firstDateOfWeek: LocalDate ->
+        Row(
+            modifier = Modifier
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0x00F84323),
+                            Color(0xC951E658),
+                        ),
+                        startY = 100f,
+                    )
+                )
+                .then(Modifier),
+        ) {
+            for (i in 0 until 7) {
+                val localDate = firstDateOfWeek.plusDays(i.toLong())
+                dayField(yearMonth, localDate)
+            }
+        }
+    }
 
 @Composable
-private fun customDayField(state: LinCalendarState) = LinCalendarDefaults.dayField(
-    state = state,
-)
+private fun customDayField(state: LinCalendarState): @Composable RowScope.(yearMonth: YearMonth, localDate: LocalDate) -> Unit =
+    { yearMonth, localDate ->
+        val context = LocalContext.current
+
+        val now = remember { LocalDate.now() }
+
+        Box(
+            modifier = Modifier
+                .height(state.option.rowHeight)
+                .weight(1f)
+                .then(Modifier),
+            contentAlignment = Alignment.Center,
+        ) {
+            if (localDate.dayOfMonth == 1) {
+                TextButton(onClick = { Toast.makeText(context, "${localDate.dayOfMonth}", Toast.LENGTH_SHORT).show() }) {
+                    Text(text = localDate.dayOfMonth.toString())
+                }
+            } else if (localDate.dayOfMonth == 3) {
+                Button(onClick = { Toast.makeText(context, "${localDate.dayOfMonth}", Toast.LENGTH_SHORT).show() }) {
+                    Text(text = localDate.dayOfMonth.toString())
+                }
+            } else if (localDate.dayOfMonth == 5) {
+                Text(
+                    text = localDate.dayOfMonth.toString(),
+                    style = TextStyle(
+                        color = Color.Red,
+                    ),
+                )
+            } else if (localDate.dayOfMonth == 7) {
+                Text(
+                    text = localDate.dayOfMonth.toString(),
+                    style = TextStyle(
+                        fontSize = 48.sp,
+                    ),
+                )
+            } else if (localDate.dayOfMonth == 19) {
+                Text(
+                    text = "Custom\n${localDate.dayOfMonth}\nDay",
+                    style = TextStyle(
+                        fontSize = 12.sp,
+                    ),
+                )
+            } else {
+                Text(
+                    text = localDate.dayOfMonth.toString(),
+                    style = TextStyle(
+                        color = if (localDate == now) MaterialTheme.colorScheme.primary
+                        else MaterialTheme.colorScheme.onSurface,
+                        fontWeight = if (localDate == now) FontWeight.Bold
+                        else if (yearMonth.month == localDate.month) FontWeight.Normal
+                        else FontWeight.Light,
+                    ),
+                )
+            }
+        }
+    }
