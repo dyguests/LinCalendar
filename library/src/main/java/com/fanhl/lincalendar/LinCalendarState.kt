@@ -75,21 +75,6 @@ fun rememberLinCalendarState(
     }
 
     return state
-
-    // LaunchedEffect(calendarState.date) {
-    //     val yearMonth = YearMonth.from(calendarState.date)
-    //     val changedPage = initialPage + YearMonth.from(adjustedInitialDate).until(yearMonth, ChronoUnit.MONTHS).toInt()
-    //     if (changedPage != pagerState.currentPage) {
-    //         pagerState.scrollToPage(changedPage)
-    //     }
-    // }
-    //
-    // LaunchedEffect(pagerState.currentPage) {
-    //     val changedPeriod = calendarState.getDateByPage(pagerState.currentPage)
-    //     if (changedPeriod != calendarState.date) {
-    //         calendarState.date = changedPeriod
-    //     }
-    // }
 }
 
 interface LinCalendarState {
