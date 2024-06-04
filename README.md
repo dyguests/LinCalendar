@@ -229,6 +229,8 @@ Now you can add a highlighted background to today.
     }
 ```
 
+<img src="https://github.com/dyguests/LinCalendar/assets/7933189/0769bdb9-a2d1-426d-9d55-47d039c45e2a" alt="default" width="360"/>
+
 That's it.
 
 # Todo List
