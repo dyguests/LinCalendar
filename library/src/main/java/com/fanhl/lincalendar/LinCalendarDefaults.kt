@@ -227,6 +227,13 @@ object LinCalendarDefaults {
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+private fun MonthsFieldPreview() {
+    val state = rememberLinCalendarState()
+    LinCalendarDefaults.monthsField(state)
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Preview(showBackground = true)
 @Composable
