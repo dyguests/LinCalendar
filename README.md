@@ -108,21 +108,9 @@ LinCalendar(
 )
 ```
 
-also equivalent to:
+...
 
-```kotlin
-LinCalendar(
-    state = state,
-    monthsField = LinCalendarDefaults.monthsField(
-        state = state,
-        monthFiled = LinCalendarDefaults.monthField(
-            state = state,
-        ),
-    ),
-)
-```
-
-... equivalent to:
+equivalent to:
 
 ```kotlin
 LinCalendar(
@@ -199,14 +187,9 @@ Now you can add a highlighted background to today.
 
 ```kotlin
     val dayField: @Composable RowScope.(YearMonth, LocalDate) -> Unit = { yearMonth: YearMonth, localDate: LocalDate ->
-        val now = remember { LocalDate.now() }
-
+        // ...
         Box(
-            modifier = Modifier
-                .height(state.option.rowHeight)
-                .weight(1f)
-                .then(Modifier),
-            contentAlignment = Alignment.Center,
+            // ...
         ) {
             if (localDate == now) {
                 Box(
@@ -216,13 +199,10 @@ Now you can add a highlighted background to today.
                 )
             }
             Text(
-                text = localDate.dayOfMonth.toString(),
+                // ...
                 style = TextStyle(
                     color = if (localDate == now) Color.White
-                    else MaterialTheme.colorScheme.onSurface,
-                    fontWeight = if (localDate == now) FontWeight.Bold
-                    else if (yearMonth.month == localDate.month) FontWeight.Normal
-                    else FontWeight.Light,
+                    // ...
                 ),
             )
         }
