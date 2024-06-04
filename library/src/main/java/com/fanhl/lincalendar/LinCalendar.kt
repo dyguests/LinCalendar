@@ -43,7 +43,7 @@ fun LinCalendar(
     ) {
         items(
             count = state.pageCount,
-            key = { page -> state.getDateByPage(page)/*todo 把key 改成 week, month*/ },
+            key = { page -> state.getKey(page) },
         ) { page ->
             val date = state.getDateByPage(page)
             monthFiled(

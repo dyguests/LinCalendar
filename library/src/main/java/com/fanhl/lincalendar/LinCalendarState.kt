@@ -43,11 +43,7 @@ fun rememberLinCalendarState(
 
     // Ensure initialDate is within startDate and endDate
     val adjustedInitialDate = remember(startDate, endDate, initialDate) {
-        when {
-            initialDate.isBefore(adjustedStartDate) -> adjustedStartDate
-            initialDate.isAfter(adjustedEndDate) -> adjustedEndDate
-            else -> initialDate
-        }
+        initialDate.coerceIn(adjustedStartDate, adjustedEndDate)
     }
 
     // endregion ---------- adjusted ----------
@@ -103,6 +99,7 @@ interface LinCalendarState {
      */
     var date: LocalDate
     var displayMode: LinCalendar.DisplayMode
+    val firstDayOfWeek: DayOfWeek
 
     val listState: LazyListState
 
@@ -125,7 +122,7 @@ internal class LinCalendarStateImpl(
     private val startDate: LocalDate,
     private val endDate: LocalDate,
     initialDisplayMode: LinCalendar.DisplayMode,
-    private val firstDayOfWeek: DayOfWeek,
+    override val firstDayOfWeek: DayOfWeek,
 ) : LinCalendarState {
 
     private var _date by mutableStateOf(initialDate)
@@ -136,7 +133,7 @@ internal class LinCalendarStateImpl(
                 return
             }
 
-            _date = value
+            _date = value.coerceIn(startDate, endDate)
         }
 
     private var _displayMode by mutableStateOf(initialDisplayMode)
