@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
@@ -416,9 +417,35 @@ private fun customDayField(state: LinCalendarState): @Composable RowScope.(yearM
 
 @Composable
 private fun HighlightCalendar(state: LinCalendarState) {
-    val dayField = LinCalendarDefaults.dayField(
-        state = state,
-    )
+    val dayField: @Composable RowScope.(YearMonth, LocalDate) -> Unit = { yearMonth: YearMonth, localDate: LocalDate ->
+        val now = remember { LocalDate.now() }
+
+        Box(
+            modifier = Modifier
+                .height(state.option.rowHeight)
+                .weight(1f)
+                .then(Modifier),
+            contentAlignment = Alignment.Center,
+        ) {
+            if (localDate == now) {
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .background(Color.Red, CircleShape)
+                )
+            }
+            Text(
+                text = localDate.dayOfMonth.toString(),
+                style = TextStyle(
+                    color = if (localDate == now) Color.White
+                    else MaterialTheme.colorScheme.onSurface,
+                    fontWeight = if (localDate == now) FontWeight.Bold
+                    else if (yearMonth.month == localDate.month) FontWeight.Normal
+                    else FontWeight.Light,
+                ),
+            )
+        }
+    }
 
     Card(
         modifier = Modifier.padding(8.dp),

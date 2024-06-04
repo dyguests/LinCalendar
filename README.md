@@ -171,6 +171,65 @@ Now we focus on `dayField`
 Inline the function `LinCalendarDefaults.dayField`.(You can also copy the source code of `LinCalendarDefaults.dayField`)
 
 ```kotlin
+val dayField: @Composable RowScope.(YearMonth, LocalDate) -> Unit = { yearMonth: YearMonth, localDate: LocalDate ->
+    val now = remember { LocalDate.now() }
+
+    Box(
+        modifier = Modifier
+            .height(state.option.rowHeight)
+            .weight(1f)
+            .then(Modifier),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = localDate.dayOfMonth.toString(),
+            style = TextStyle(
+                color = if (localDate == now) MaterialTheme.colorScheme.primary
+                else MaterialTheme.colorScheme.onSurface,
+                fontWeight = if (localDate == now) FontWeight.Bold
+                else if (yearMonth.month == localDate.month) FontWeight.Normal
+                else FontWeight.Light,
+            ),
+        )
+    }
+}
+```
+
+Now you can add a highlighted background to today.
+
+```kotlin
+    val dayField: @Composable RowScope.(YearMonth, LocalDate) -> Unit = { yearMonth: YearMonth, localDate: LocalDate ->
+        val now = remember { LocalDate.now() }
+
+        Box(
+            modifier = Modifier
+                .height(state.option.rowHeight)
+                .weight(1f)
+                .then(Modifier),
+            contentAlignment = Alignment.Center,
+        ) {
+            if (localDate == now) {
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .background(Color.Red, CircleShape)
+                )
+            }
+            Text(
+                text = localDate.dayOfMonth.toString(),
+                style = TextStyle(
+                    color = if (localDate == now) Color.White
+                    else MaterialTheme.colorScheme.onSurface,
+                    fontWeight = if (localDate == now) FontWeight.Bold
+                    else if (yearMonth.month == localDate.month) FontWeight.Normal
+                    else FontWeight.Light,
+                ),
+            )
+        }
+    }
+```
+
+That's it.
 
 # Todo List
 
