@@ -3,13 +3,16 @@ package com.fanhl.lincalendar
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.MaterialTheme
@@ -43,6 +46,38 @@ object LinCalendarDefaults {
         weekDisplayMode = weekDisplayMode,
         locale = locale
     )
+
+
+    @OptIn(ExperimentalFoundationApi::class)
+    @Composable
+    fun monthsField(
+        state: LinCalendarState,
+        modifier: Modifier = Modifier,
+        options: LinCalendar.Option = option(),
+        monthFiled: @Composable() (LazyItemScope.(state: LinCalendarState, date: LocalDate) -> Unit) = monthField(
+            options = options,
+        ),
+    ) = @Composable {
+        LazyRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .then(other = modifier),
+            state = state.listState,
+            flingBehavior = rememberSnapFlingBehavior(lazyListState = state.listState),
+        ) {
+            items(
+                count = state.pageCount,
+                key = { page -> state.getKey(page) },
+            ) { page ->
+                val date = state.getDateByPage(page)
+                monthFiled(
+                    state = state,
+                    date = date,
+                )
+            }
+        }
+    }
 
     fun monthField(
         modifier: Modifier = Modifier,

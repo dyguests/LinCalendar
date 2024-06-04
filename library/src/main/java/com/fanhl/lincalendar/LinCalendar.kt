@@ -1,14 +1,9 @@
 package com.fanhl.lincalendar
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyItemScope
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,41 +12,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import java.time.DayOfWeek
-import java.time.LocalDate
 import java.util.Locale
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LinCalendar(
     state: LinCalendarState,
     modifier: Modifier = Modifier,
     options: LinCalendar.Option = LinCalendarDefaults.option(),
-    monthFiled: @Composable LazyItemScope.(
-        state: LinCalendarState,
-        date: LocalDate
-    ) -> Unit = LinCalendarDefaults.monthField(
-        options = options, // todo 后续看能否通过 LinCalendarScope 来透传
+    monthsField: @Composable () -> Unit = LinCalendarDefaults.monthsField(
+        state = state,
+        options = options,
+        monthFiled = LinCalendarDefaults.monthField(
+            options = options,
+        ),
     ),
 ) {
-    LazyRow(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .then(modifier),
-        state = state.listState,
-        flingBehavior = rememberSnapFlingBehavior(lazyListState = state.listState),
-    ) {
-        items(
-            count = state.pageCount,
-            key = { page -> state.getKey(page) },
-        ) { page ->
-            val date = state.getDateByPage(page)
-            monthFiled(
-                state,
-                date,
-            )
-        }
-    }
+    monthsField()
 }
 
 @Preview(showBackground = true)
