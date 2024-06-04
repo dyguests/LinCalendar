@@ -10,13 +10,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalAdjusters
 import java.time.temporal.WeekFields
-import java.util.Locale
 import kotlin.properties.Delegates
 
 /**
@@ -28,7 +26,7 @@ fun rememberLinCalendarState(
     startDate: LocalDate = LocalDate.of(1900, 1, 1),
     endDate: LocalDate = LocalDate.of(2099, 12, 31),
     initialDisplayMode: LinCalendar.DisplayMode = LinCalendar.DisplayMode.MONTHLY,
-    firstDayOfWeek: DayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek,
+    option: LinCalendar.Option = LinCalendarDefaults.option(),
 ): LinCalendarState {
     // region ---------- adjusted date ----------
 
@@ -54,7 +52,7 @@ fun rememberLinCalendarState(
             startDate = adjustedStartDate,
             endDate = adjustedEndDate,
             initialDisplayMode = initialDisplayMode,
-            firstDayOfWeek = firstDayOfWeek,
+            option = option,
         )
     }
 
@@ -84,7 +82,7 @@ interface LinCalendarState {
      */
     var date: LocalDate
     var displayMode: LinCalendar.DisplayMode
-    val firstDayOfWeek: DayOfWeek
+    val option: LinCalendar.Option
 
     val listState: LazyListState
 
@@ -107,7 +105,7 @@ internal class LinCalendarStateImpl(
     private val startDate: LocalDate,
     private val endDate: LocalDate,
     initialDisplayMode: LinCalendar.DisplayMode,
-    override val firstDayOfWeek: DayOfWeek,
+    override val option: LinCalendar.Option,
 ) : LinCalendarState {
 
     private var _date by mutableStateOf(initialDate)
@@ -142,7 +140,7 @@ internal class LinCalendarStateImpl(
     init {
         _monthPageCount = ChronoUnit.MONTHS.between(YearMonth.from(startDate), YearMonth.from(endDate)).toInt() + 1
 
-        val weekFields = WeekFields.of(firstDayOfWeek, 1)
+        val weekFields = WeekFields.of(option.firstDayOfWeek, 1)
         val startWeek = startDate.with(weekFields.dayOfWeek(), 1)
         val endWeek = endDate.with(weekFields.dayOfWeek(), 1)
         _weekPageCount = ChronoUnit.WEEKS.between(startWeek, endWeek).toInt() + 1
@@ -166,7 +164,7 @@ internal class LinCalendarStateImpl(
         } else {
             startDate.plusWeeks(page.toLong())
                 // 先找到这周的第一天
-                .with(TemporalAdjusters.previousOrSame(firstDayOfWeek))
+                .with(TemporalAdjusters.previousOrSame(option.firstDayOfWeek))
                 // 再找到这周与date相同的周几
                 .with(TemporalAdjusters.nextOrSame(date.dayOfWeek))
         }
@@ -176,7 +174,7 @@ internal class LinCalendarStateImpl(
         return if (_displayMode == LinCalendar.DisplayMode.MONTHLY) {
             ChronoUnit.MONTHS.between(YearMonth.from(startDate), YearMonth.from(date)).toInt()
         } else {
-            val weekFields = WeekFields.of(firstDayOfWeek, 1)
+            val weekFields = WeekFields.of(option.firstDayOfWeek, 1)
             val startWeek = startDate.with(weekFields.dayOfWeek(), 1)
             ChronoUnit.WEEKS.between(startWeek, date.with(weekFields.dayOfWeek(), 1)).toInt()
         }
@@ -190,7 +188,7 @@ internal class LinCalendarStateImpl(
                     "startDate" to it.startDate,
                     "endDate" to it.endDate,
                     "_displayMode" to it._displayMode,
-                    "firstDayOfWeek" to it.firstDayOfWeek,
+                    "option" to it.option,
                 )
             },
             restore = {
@@ -199,7 +197,7 @@ internal class LinCalendarStateImpl(
                     startDate = it["startDate"] as LocalDate,
                     endDate = it["endDate"] as LocalDate,
                     initialDisplayMode = it["_displayMode"] as LinCalendar.DisplayMode,
-                    firstDayOfWeek = it["firstDayOfWeek"] as DayOfWeek,
+                    option = it["option"] as LinCalendar.Option,
                 )
             }
         )

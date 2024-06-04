@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -18,12 +19,10 @@ import java.util.Locale
 fun LinCalendar(
     state: LinCalendarState,
     modifier: Modifier = Modifier,
-    option: LinCalendar.Option = LinCalendarDefaults.option(),
     monthsField: @Composable () -> Unit = LinCalendarDefaults.monthsField(
         state = state,
-        option = option,
         monthFiled = LinCalendarDefaults.monthField(
-            option = option,
+            state = state,
         ),
     ),
 ) {
@@ -49,6 +48,7 @@ private fun LinCalendarPreview() {
 }
 
 object LinCalendar {
+    @Stable
     data class Option(
         val headerHeight: Dp = 32.dp,
         val rowHeight: Dp = 36.dp,

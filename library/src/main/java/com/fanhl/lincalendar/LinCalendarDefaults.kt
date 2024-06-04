@@ -53,9 +53,8 @@ object LinCalendarDefaults {
     fun monthsField(
         state: LinCalendarState,
         modifier: Modifier = Modifier,
-        option: LinCalendar.Option = option(),
-        monthFiled: @Composable() (LazyItemScope.(state: LinCalendarState, date: LocalDate) -> Unit) = monthField(
-            option = option,
+        monthFiled: @Composable() (LazyItemScope.(date: LocalDate) -> Unit) = monthField(
+            state = state,
         ),
     ) = @Composable {
         LazyRow(
@@ -72,7 +71,6 @@ object LinCalendarDefaults {
             ) { page ->
                 val date = state.getDateByPage(page)
                 monthFiled(
-                    state = state,
                     date = date,
                 )
             }
@@ -80,28 +78,27 @@ object LinCalendarDefaults {
     }
 
     fun monthField(
+        state: LinCalendarState,
         modifier: Modifier = Modifier,
-        option: LinCalendar.Option = option(),
         weekHeaderField: @Composable (ColumnScope.() -> Unit) = weekHeaderField(
-            option = option,
+            state = state,
         ),
         weekField: @Composable AnimatedVisibilityScope.(yearMonth: YearMonth, firstDateOfWeek: LocalDate) -> Unit = weekField(
-            option = option,
+            state = state,
         ),
     ): @Composable LazyItemScope.(
-        state: LinCalendarState,
         /** 当前显示日期；用于判断当前显示的月份/周。（之前用YearMonth，但是无法兼容周视图，这里统一改成 LocalDate） */
         date: LocalDate,
-    ) -> Unit = { state, date ->
+    ) -> Unit = { date ->
         val yearMonth = remember(date) { YearMonth.from(date) }
         val firstDayOfMonth = remember(date) { yearMonth.atDay(1) }
         val weeks = remember(date) {
             val dayOfWeekOfFirstDay = firstDayOfMonth.dayOfWeek.value
-            ((dayOfWeekOfFirstDay - option.firstDayOfWeek.value) + yearMonth.lengthOfMonth() + /*向上取整*/6) / 7
+            ((dayOfWeekOfFirstDay - state.option.firstDayOfWeek.value) + yearMonth.lengthOfMonth() + /*向上取整*/6) / 7
         }
 
         val weekFields = remember {
-            WeekFields.of(option.firstDayOfWeek, 1)
+            WeekFields.of(state.option.firstDayOfWeek, 1)
         }
         // date 所在周是当月的第几周
         val weekOfMonth = remember(date) {
@@ -116,7 +113,7 @@ object LinCalendarDefaults {
             weekHeaderField()
             for (week in 1..5) {
                 // 当周第一天是当月多少号
-                val firstDayOfMonthAtWeek = (week - 1) * 7 - (firstDayOfMonth.dayOfWeek.value - option.firstDayOfWeek.value)
+                val firstDayOfMonthAtWeek = (week - 1) * 7 - (firstDayOfMonth.dayOfWeek.value - state.option.firstDayOfWeek.value)
                 val firstDateOfWeek = firstDayOfMonth.plusDays(firstDayOfMonthAtWeek.toLong())
 
                 AnimatedVisibility(
@@ -127,7 +124,7 @@ object LinCalendarDefaults {
                     } else {
                         Box(
                             modifier = Modifier
-                                .height(option.rowHeight)
+                                .height(state.option.rowHeight)
                                 .weight(1f),
                         ) { }
                     }
@@ -138,20 +135,20 @@ object LinCalendarDefaults {
 
 
     fun weekHeaderField(
+        state: LinCalendarState,
         modifier: Modifier = Modifier,
-        option: LinCalendar.Option = option(),
         dayHeaderField: @Composable (RowScope.(dayOfWeek: DayOfWeek) -> Unit) = dayHeaderField(
-            option = option,
+            state = state,
         ),
     ): @Composable (ColumnScope.() -> Unit) = {
         val sortedDaysOfWeek = remember {
             DayOfWeek.entries.run {
-                slice(option.firstDayOfWeek.ordinal until size) + slice(0 until option.firstDayOfWeek.ordinal)
+                slice(state.option.firstDayOfWeek.ordinal until size) + slice(0 until state.option.firstDayOfWeek.ordinal)
             }
         }
         Row(
             modifier = Modifier
-                .height(option.headerHeight)
+                .height(state.option.headerHeight)
                 .then(modifier),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -162,8 +159,8 @@ object LinCalendarDefaults {
     }
 
     fun dayHeaderField(
+        state: LinCalendarState,
         modifier: Modifier = Modifier,
-        option: LinCalendar.Option = option(),
     ): @Composable RowScope.(dayOfWeek: DayOfWeek) -> Unit = { dayOfWeek ->
         val locale = remember { Locale.getDefault() }
         Box(
@@ -181,10 +178,10 @@ object LinCalendarDefaults {
     }
 
     fun weekField(
+        state: LinCalendarState,
         modifier: Modifier = Modifier,
-        option: LinCalendar.Option,
         dayField: @Composable RowScope.(yearMonth: YearMonth, localDate: LocalDate) -> Unit = dayField(
-            option = option,
+            state = state,
         )
     ): @Composable AnimatedVisibilityScope.(
         yearMonth: YearMonth,
@@ -202,8 +199,8 @@ object LinCalendarDefaults {
     }
 
     fun dayField(
+        state: LinCalendarState,
         modifier: Modifier = Modifier,
-        option: LinCalendar.Option,
     ): @Composable RowScope.(
         yearMonth: YearMonth,
         localDate: LocalDate,
@@ -212,7 +209,7 @@ object LinCalendarDefaults {
 
         Box(
             modifier = Modifier
-                .height(option.rowHeight)
+                .height(state.option.rowHeight)
                 .weight(1f)
                 .then(modifier),
             contentAlignment = Alignment.Center,
@@ -235,11 +232,10 @@ object LinCalendarDefaults {
 @Preview(showBackground = true)
 @Composable
 private fun MonthFieldPreview() {
-    val calendarState = rememberLinCalendarState()
+    val state = rememberLinCalendarState()
     LazyRow {
         item {
-            LinCalendarDefaults.monthField()(
-                calendarState,
+            LinCalendarDefaults.monthField(state)(
                 LocalDate.now(),
             )
         }
@@ -250,11 +246,10 @@ private fun MonthFieldPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun MonthFieldPreview2() {
-    val calendarState = rememberLinCalendarState()
+    val state = rememberLinCalendarState()
     LazyRow {
         item {
-            LinCalendarDefaults.monthField()(
-                calendarState,
+            LinCalendarDefaults.monthField(state)(
                 LocalDate.of(2021, 2, 1),
             )
         }
@@ -264,7 +259,8 @@ private fun MonthFieldPreview2() {
 @Preview(showBackground = true)
 @Composable
 private fun WeekHeaderFieldPreview() {
+    val state = rememberLinCalendarState()
     Column {
-        LinCalendarDefaults.weekHeaderField()()
+        LinCalendarDefaults.weekHeaderField(state)()
     }
 }

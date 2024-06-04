@@ -47,7 +47,7 @@ fun SpeciesScreen() {
     ) {
         item { DefaultCalendar(state) }
         item { TitledCalendar(state) }
-        item { CustomMonthCalendar(state) }
+        item { CustomMonthCalendar() }
     }
 }
 
@@ -112,11 +112,13 @@ private fun TitledCalendar(state: LinCalendarState) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun CustomMonthCalendar(state: LinCalendarState) {
-    val option = LinCalendarDefaults.option(
-        headerHeight = 48.dp,
-        rowHeight = 64.dp,
-        firstDayOfWeek = DayOfWeek.TUESDAY,
+private fun CustomMonthCalendar() {
+    val state = rememberLinCalendarState(
+        option = LinCalendarDefaults.option(
+            headerHeight = 48.dp,
+            rowHeight = 64.dp,
+            firstDayOfWeek = DayOfWeek.TUESDAY,
+        )
     )
     Card(
         modifier = Modifier.padding(8.dp),
@@ -131,12 +133,11 @@ private fun CustomMonthCalendar(state: LinCalendarState) {
                 state = state,
                 modifier = Modifier
                     .fillMaxWidth(),
-                option = option,
                 monthsField = customMonthsField(
                     state = state,
                     modifier = Modifier.background(Color(0x8DDF963D), CircleShape),
                     monthFiled = LinCalendarDefaults.monthField(
-                        option = option,
+                        state = state,
                     )
                 ),
             )
@@ -147,9 +148,8 @@ private fun CustomMonthCalendar(state: LinCalendarState) {
 @Preview(showBackground = true)
 @Composable
 private fun CustomMonthCalendarPreview() {
-    val state = rememberLinCalendarState()
     LinCalendarTheme {
-        CustomMonthCalendar(state)
+        CustomMonthCalendar()
     }
 }
 
@@ -158,7 +158,7 @@ private fun CustomMonthCalendarPreview() {
 private fun customMonthsField(
     state: LinCalendarState,
     modifier: Modifier = Modifier,
-    monthFiled: @Composable() (LazyItemScope.(state: LinCalendarState, date: LocalDate) -> Unit)
+    monthFiled: @Composable() (LazyItemScope.(date: LocalDate) -> Unit)
 ): @Composable () -> Unit = (@Composable {
     Box {
         Text(
@@ -182,7 +182,6 @@ private fun customMonthsField(
             ) { page ->
                 val date = state.getDateByPage(page)
                 monthFiled(
-                    state = state,
                     date = date,
                 )
             }
