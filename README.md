@@ -53,6 +53,13 @@ fun rememberLinCalendarState(
 ```
 
 ```kotlin
+enum class DisplayMode {
+    MONTHLY,
+    WEEKLY, // todo impl
+}
+```
+
+```kotlin
 data class Option(
     val headerHeight: Dp = 32.dp,
     val rowHeight: Dp = 36.dp,
@@ -60,6 +67,23 @@ data class Option(
     val weekDisplayMode: WeekDisplayMode = WeekDisplayMode.FIXED_HEIGHT,
     val locale: Locale = Locale.getDefault(),
 )
+```
+
+Consider of `WeekDisplayMode`, the height of Calendar in different months may be different.
+
+Therefore, you cannot set the height of Calendar directly, but use `headerHeight` and `rowHeight`.
+
+```kotlin
+enum class WeekDisplayMode {
+    // 高度不变，空余第五周
+    FIXED_HEIGHT,
+
+    // 高度不变，按周平分高度
+    EQUAL_HEIGHT, // todo impl
+
+    // 高度按当月有几周来动态适配
+    DYNAMIC_HEIGHT // todo impl
+}
 ```
 
 # Custom composable
