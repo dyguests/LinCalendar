@@ -138,17 +138,9 @@ val dayField = LinCalendarDefaults.dayField(
 )
 
 LinCalendar(
-    state = state,
-    monthsField = LinCalendarDefaults.monthsField(
-        state = state,
-        monthFiled = LinCalendarDefaults.monthField(
-            state = state,
-            weekField = LinCalendarDefaults.weekField(
-                state = state,
+    // ...
                 dayField = dayField
-            ),
-        ),
-    ),
+    // ...
 )
 ```
 
