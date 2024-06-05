@@ -47,7 +47,6 @@ object LinCalendarDefaults {
         locale = locale
     )
 
-
     @OptIn(ExperimentalFoundationApi::class)
     fun monthsField(
         state: LinCalendarState,
@@ -231,7 +230,7 @@ object LinCalendarDefaults {
 @Composable
 private fun MonthsFieldPreview() {
     val state = rememberLinCalendarState()
-    LinCalendarDefaults.monthsField(state)
+    LinCalendarDefaults.monthsField(state)()
 }
 
 @OptIn(ExperimentalFoundationApi::class)
