@@ -58,14 +58,14 @@ fun rememberLinCalendarState(
 
     LaunchedEffect(state.date) {
         val page = state.getPageByDate(state.date)
-        if (state.listState.firstVisibleItemIndex == page) {
+        if (state.monthListState.firstVisibleItemIndex == page) {
             return@LaunchedEffect
         }
-        state.listState.scrollToItem(page)
+        state.monthListState.scrollToItem(page)
     }
 
-    LaunchedEffect(state.listState.firstVisibleItemIndex) {
-        val date = state.getDateByPage(state.listState.firstVisibleItemIndex)
+    LaunchedEffect(state.monthListState.firstVisibleItemIndex) {
+        val date = state.getDateByPage(state.monthListState.firstVisibleItemIndex)
         if (state.date == date) {
             return@LaunchedEffect
         }
@@ -84,7 +84,8 @@ interface LinCalendarState {
     var displayMode: LinCalendar.DisplayMode
     val option: LinCalendar.Option
 
-    val listState: LazyListState
+    val monthListState: LazyListState
+    val weekListState: LazyListState
 
     val pageCount: Int
 
@@ -96,7 +97,7 @@ interface LinCalendarState {
     /**
      * 基于日期，计算对应的页数。
      */
-    fun getPageByDate(date: LocalDate): Int
+    fun getPageByDate(date: LocalDate, displayMode: LinCalendar.DisplayMode? = null): Int
 }
 
 @Stable
@@ -132,7 +133,8 @@ internal class LinCalendarStateImpl(
             _pageCount = calculatePageCount()
         }
 
-    override val listState = LazyListState(firstVisibleItemIndex = getPageByDate(_date))
+    override val monthListState = LazyListState(firstVisibleItemIndex = getPageByDate(_date, LinCalendar.DisplayMode.MONTHLY))
+    override val weekListState = LazyListState(firstVisibleItemIndex = getPageByDate(_date, LinCalendar.DisplayMode.WEEKLY))
 
     private var _monthPageCount by Delegates.notNull<Int>()
     private var _weekPageCount by Delegates.notNull<Int>()
@@ -170,8 +172,9 @@ internal class LinCalendarStateImpl(
         }
     }
 
-    override fun getPageByDate(date: LocalDate): Int {
-        return if (_displayMode == LinCalendar.DisplayMode.MONTHLY) {
+    override fun getPageByDate(date: LocalDate, displayMode: LinCalendar.DisplayMode?): Int {
+
+        return if ((displayMode ?: _displayMode) == LinCalendar.DisplayMode.MONTHLY) {
             ChronoUnit.MONTHS.between(YearMonth.from(startDate), YearMonth.from(date)).toInt()
         } else {
             val weekFields = WeekFields.of(option.firstDayOfWeek, 1)

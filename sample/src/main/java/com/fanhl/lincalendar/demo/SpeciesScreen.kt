@@ -200,8 +200,8 @@ private fun customMonthsField(
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .then(other = modifier),
-            state = state.listState,
-            flingBehavior = rememberSnapFlingBehavior(lazyListState = state.listState),
+            state = state.monthListState,
+            flingBehavior = rememberSnapFlingBehavior(lazyListState = state.monthListState),
         ) {
             items(
                 count = state.pageCount,
