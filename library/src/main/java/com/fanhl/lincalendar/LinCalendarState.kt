@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.Saver
@@ -148,7 +149,7 @@ internal class LinCalendarStateImpl(
         _weekPageCount = ChronoUnit.WEEKS.between(startWeek, endWeek).toInt() + 1
     }
 
-    private var _pageCount by mutableStateOf(calculatePageCount())
+    private var _pageCount by mutableIntStateOf(calculatePageCount())
 
     private fun calculatePageCount() = if (_displayMode == LinCalendar.DisplayMode.MONTHLY) {
         _monthPageCount

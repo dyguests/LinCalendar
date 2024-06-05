@@ -3,7 +3,6 @@ package com.fanhl.lincalendar
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -61,7 +60,7 @@ object LinCalendarDefaults {
                 .wrapContentHeight()
                 .then(other = modifier),
             state = state.monthListState,
-            flingBehavior = rememberSnapFlingBehavior(lazyListState = state.monthListState),
+            flingBehavior = rememberLinFlingBehavior(state),
         ) {
             items(
                 count = state.pageCount,
