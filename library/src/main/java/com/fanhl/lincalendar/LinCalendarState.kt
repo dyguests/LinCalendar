@@ -16,6 +16,7 @@ import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalAdjusters
 import java.time.temporal.WeekFields
 import kotlin.properties.Delegates
+import kotlin.random.Random
 
 /**
  * @param initialDate 初始日期 用于判断当前显示的月份/周。（之前用YearMonth，但是无法兼容周视图，这里统一改成 LocalDate）
@@ -56,7 +57,7 @@ fun rememberLinCalendarState(
         )
     }
 
-    LaunchedEffect(state.date) {
+    LaunchedEffect(state.date, state.displayMode) {
         val page = state.getPageByDate(state.date)
         if (state.listState.firstVisibleItemIndex == page) {
             return@LaunchedEffect
@@ -97,6 +98,11 @@ interface LinCalendarState {
      * 基于日期，计算对应的页数。
      */
     fun getPageByDate(date: LocalDate): Int
+
+    /**
+     * LazyRow 的 key
+     */
+    fun getKey(page: Int): Any
 }
 
 @Stable
@@ -177,6 +183,23 @@ internal class LinCalendarStateImpl(
             val weekFields = WeekFields.of(option.firstDayOfWeek, 1)
             val startWeek = startDate.with(weekFields.dayOfWeek(), 1)
             ChronoUnit.WEEKS.between(startWeek, date.with(weekFields.dayOfWeek(), 1)).toInt()
+        }
+    }
+
+    /**
+     * key : month/week
+     * value : LazyRow 的 key
+     */
+    private val monthKeyMap: MutableMap<YearMonth, Long> = mutableMapOf()
+    private val weekKeyMap: MutableMap<LocalDate, Long> = mutableMapOf()
+    override fun getKey(page: Int): Any {
+        if (displayMode == LinCalendar.DisplayMode.MONTHLY) {
+            val mapKey = YearMonth.from(getDateByPage(page))
+            return monthKeyMap.getOrPut(mapKey) { Random.nextLong() }
+        } else {
+            val weekFields = WeekFields.of(option.firstDayOfWeek, 1)
+            val mapKey = getDateByPage(page).with(weekFields.dayOfWeek(), 1) // 当周第一天
+            return weekKeyMap.getOrPut(mapKey) { Random.nextLong() }
         }
     }
 

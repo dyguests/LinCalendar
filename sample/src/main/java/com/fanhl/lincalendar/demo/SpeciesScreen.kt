@@ -47,7 +47,6 @@ import com.fanhl.lincalendar.LinCalendar
 import com.fanhl.lincalendar.LinCalendarDefaults
 import com.fanhl.lincalendar.LinCalendarState
 import com.fanhl.lincalendar.demo.ui.theme.LinCalendarTheme
-import com.fanhl.lincalendar.getKey
 import com.fanhl.lincalendar.rememberLinCalendarState
 import java.time.DayOfWeek
 import java.time.LocalDate
