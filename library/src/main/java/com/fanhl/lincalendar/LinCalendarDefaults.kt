@@ -75,9 +75,8 @@ object LinCalendarDefaults {
                 count = state.pageCount,
                 key = { page -> state.getKey(page) },
             ) { page ->
-                val date = state.getDateByPage(page)
                 monthFiled(
-                    date = date,
+                    date = state.getDateByPage(page),
                 )
             }
         }

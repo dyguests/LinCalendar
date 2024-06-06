@@ -56,7 +56,7 @@ fun rememberLinCalendarState(
         )
     }
 
-    LaunchedEffect(state.date) {
+    LaunchedEffect(state.date, state.displayMode) {
         val page = state.getPageByDate(state.date)
         if (state.listState.firstVisibleItemIndex == page) {
             return@LaunchedEffect
