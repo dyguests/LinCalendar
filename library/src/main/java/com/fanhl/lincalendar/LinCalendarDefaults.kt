@@ -6,6 +6,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -215,7 +217,11 @@ object LinCalendarDefaults {
             modifier = Modifier
                 .height(state.option.rowHeight)
                 .weight(1f)
-                .clickable { state.date = localDate }
+                .clickable(
+                    onClick = { state.date = localDate },
+                    indication = rememberRipple(bounded = false), // 使用 Ripple 效果
+                    interactionSource = remember { MutableInteractionSource() }
+                )
                 .then(modifier),
             contentAlignment = Alignment.Center,
         ) {
@@ -288,5 +294,17 @@ private fun WeekHeaderFieldPreview() {
     val state = rememberLinCalendarState()
     Column {
         LinCalendarDefaults.weekHeaderField(state)()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun DayFieldPreview() {
+    val state = rememberLinCalendarState()
+    Row {
+        LinCalendarDefaults.dayField(state)(
+            YearMonth.now(),
+            LocalDate.now(),
+        )
     }
 }
