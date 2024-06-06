@@ -2,6 +2,7 @@ package com.fanhl.lincalendar
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Box
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -21,6 +23,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,6 +35,7 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.temporal.WeekFields
 import java.util.Locale
+import kotlin.math.min
 
 object LinCalendarDefaults {
     fun option(
@@ -212,12 +217,26 @@ object LinCalendarDefaults {
                 .then(modifier),
             contentAlignment = Alignment.Center,
         ) {
+
+            val primary = MaterialTheme.colorScheme.primary
+            if (localDate == state.date) {
+                Canvas(modifier = Modifier.fillMaxSize()) {
+                    val diameter = min(size.width, size.height)
+                    val radius = diameter / 2
+                    drawCircle(
+                        color = primary,
+                        radius = radius,
+                        center = Offset(size.width / 2, size.height / 2),
+                        style = Stroke(1.dp.toPx())
+                    )
+                }
+            }
             Text(
                 text = localDate.dayOfMonth.toString(),
                 style = TextStyle(
-                    color = if (localDate == now) MaterialTheme.colorScheme.primary
+                    color = if (localDate == now) primary
                     else MaterialTheme.colorScheme.onSurface,
-                    fontWeight = if (localDate == now) FontWeight.Bold
+                    fontWeight = if (localDate == now) FontWeight.Black
                     else if (yearMonth.month == localDate.month) FontWeight.Normal
                     else FontWeight.Light,
                 ),
